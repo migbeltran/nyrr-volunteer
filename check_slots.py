@@ -95,7 +95,11 @@ def send_notification(title, message, priority="default"):
     requests.post(
         NTFY_URL,
         data=message.encode("utf-8"),
-        headers={"Title": title, "Priority": priority},
+        headers={
+            "Title": title,
+            "Priority": priority,
+            "Content-Type": "text/plain; charset=utf-8",
+        },
         timeout=10,
     )
 
