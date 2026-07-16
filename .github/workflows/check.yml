@@ -2,17 +2,11 @@ name: Check volunteer slots
 
 on:
   schedule:
-    # NOTE: GitHub Actions cron is in UTC and does NOT auto-adjust for
-    # daylight saving time. These times are set for EDT (UTC-4), i.e.
-    # summer time in NYC:
-    #   15:00 UTC = 11:00 AM EDT
-    #   00:00 UTC = 8:00 PM EDT (same calendar day in ET)
-    # When NYC switches to EST (UTC-5) in November, these will run
-    # 1 hour later than intended (e.g. 11am becomes 12pm) unless you
-    # update the cron lines below to 16:00 and 01:00.
-    - cron: "0 15 * * *"
-    - cron: "0 0 * * *"
-  workflow_dispatch: {}  # allows manual "Run workflow" trigger for testing
+    # Runs every hour, on the hour, in UTC. The script itself decides
+    # whether to send the full summary (once/day) or stay silent unless
+    # something changed - see SUMMARY_HOUR_UTC in check_slots.py.
+    - cron: "0 * * * *"
+  workflow_dispatch: {}  # manual "Run workflow" trigger always sends the summary, for testing
 
 permissions:
   contents: write  # needed so the workflow can commit the updated state.json
@@ -35,6 +29,7 @@ jobs:
       - name: Run slot checker
         env:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          FORCE_SUMMARY: ${{ github.event_name == 'workflow_dispatch' && 'true' || 'false' }}
         run: python check_slots.py
 
       - name: Commit updated state file

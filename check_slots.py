@@ -13,6 +13,7 @@ import json
 import os
 import re
 import sys
+from datetime import datetime, timezone
 import requests
 from bs4 import BeautifulSoup
 
@@ -29,6 +30,19 @@ URLS = [
 ]
 
 STATE_FILE = "state.json"
+
+# The full summary notification only fires once a day, at the hour below
+# (in UTC). Everything else is a silent background check that only alerts
+# on an actual change.
+#   0 UTC = 8:00 PM EDT (summer time, UTC-4)
+# NOTE: when NYC switches to EST (UTC-5) in November, 8pm ET becomes 01:00
+# UTC. Update SUMMARY_HOUR_UTC to 1 at that point, or the summary will
+# silently start firing at 7pm ET instead of 8pm.
+SUMMARY_HOUR_UTC = 0
+
+# workflow_dispatch (manual "Run workflow" clicks) always sends the summary
+# too, so you can test without waiting for the right hour.
+FORCE_SUMMARY = os.environ.get("FORCE_SUMMARY", "false").lower() == "true"
 
 # Set this as a GitHub Actions secret and reference it via env var below.
 NTFY_TOPIC = os.environ.get("NTFY_TOPIC")  # e.g. "miguel-volunteer-slots-8x2k"
@@ -168,12 +182,16 @@ def main():
             priority="high",
         )
 
-    # Always send the scheduled summary
-    send_notification(
-        "Volunteer slots - status check",
-        "\n".join(summary_lines) if summary_lines else "No data collected.",
-        priority="default",
-    )
+    # Only send the full summary once a day (or if manually forced via
+    # workflow_dispatch, for easy testing). Every other hourly run stays
+    # silent unless a change was detected above.
+    current_hour_utc = datetime.now(timezone.utc).hour
+    if FORCE_SUMMARY or current_hour_utc == SUMMARY_HOUR_UTC:
+        send_notification(
+            "Volunteer slots - status check",
+            "\n".join(summary_lines) if summary_lines else "No data collected.",
+            priority="default",
+        )
 
     save_state(new_state)
 
