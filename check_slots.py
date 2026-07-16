@@ -19,10 +19,6 @@ from bs4 import BeautifulSoup
 
 URLS = [
     "https://events.nyrr.org/nyrr-team-champions-5m-volunteers",
-    "https://events.nyrr.org/tcs-new-york-city-marathon-training-series-12m-volunteers",
-    "https://events.nyrr.org/nyrr-jersey-city-5k-volunteers",
-    "https://events.nyrr.org/nyrr-staten-island-half-volunteers",
-    "https://events.nyrr.org/nyrr-ted-corbitt-15k-volunteers",
     # add more event URLs here as needed
 ]
 
@@ -124,10 +120,14 @@ def main():
 
         summary_lines.append(f"\n{url}")
         for name, status in slots.items():
-            summary_lines.append(f"  - {name}: {status}")
+            icon = "🟢" if status == "Available" else "🔴"
+            summary_lines.append(f"  {icon} {name}: {status}")
             old_status = old_slots.get(name)
             if old_status is not None and old_status != status:
-                changes.append(f"{name} ({url}): {old_status} -> {status}")
+                old_icon = "🟢" if old_status == "Available" else "🔴"
+                changes.append(
+                    f"{old_icon}->{icon} {name} ({url}): {old_status} -> {status}"
+                )
 
     # Immediate alert on any change
     if changes:
