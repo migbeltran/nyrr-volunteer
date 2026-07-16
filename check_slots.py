@@ -11,6 +11,7 @@ State is persisted in state.json so runs can compare against the past.
 
 import json
 import os
+import re
 import sys
 import requests
 from bs4 import BeautifulSoup
@@ -38,6 +39,19 @@ HEADERS = {
                   "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
 }
 
+# Status labels are color-coded on this platform rather than always using
+# the same wording. We match by color instead of exact text, so we're not
+# thrown off by variants like "All Spots Filled" vs. some other future label.
+#   #FF0000 (red)    -> Filled
+#   #15803D (green)  -> Available
+#   #1E90FF (blue)   -> "Medical Available" - deliberately ignored/skipped,
+#                        per user preference (not a regular volunteer slot).
+COLOR_STATUS_MAP = {
+    "#FF0000": "All Spots Filled",
+    "#15803D": "Available",
+}
+IGNORED_COLORS = {"#1E90FF"}  # Medical Available - skip entirely
+
 # --- Scraping ----------------------------------------------------------
 
 def fetch_slots(url):
@@ -47,25 +61,33 @@ def fetch_slots(url):
     soup = BeautifulSoup(resp.text, "html.parser")
 
     slots = {}
-    # Each assignment option is a <li> containing a status <p> tag
-    # ("Available" or "All Spots Filled") plus the slot name and tag text.
-    status_tags = soup.find_all(
-        string=lambda t: t and ("All Spots Filled" in t or t.strip() == "Available")
-    )
-    # find_all(string=...) returns NavigableString nodes; get their parent tag
-    status_tags = [t.parent for t in status_tags]
-    for status_tag in status_tags:
-        status = "Available" if "Available" in status_tag.get_text() else "All Spots Filled"
-        li = status_tag.find_parent("li")
+    # Each assignment option is a <li> containing a status tag (<p> or <span>)
+    # with an inline "color" style. We identify status by that color rather
+    # than the text itself, since wording can vary across events.
+    for tag in soup.find_all(["p", "span"], style=True):
+        style = tag.get("style", "")
+        match = re.search(r"color:\s*(#[0-9A-Fa-f]{3,6})", style)
+        if not match:
+            continue
+        color = match.group(1).upper()
+
+        if color in IGNORED_COLORS:
+            continue  # e.g. "Medical Available" - not tracked
+        if color not in COLOR_STATUS_MAP:
+            continue  # unrecognized color, not a status tag we care about
+
+        status = COLOR_STATUS_MAP[color]
+
+        li = tag.find_parent("li")
         if not li:
             continue
-        # Get all text in the <li>, split into lines, drop the status text
-        # and the "Register" link text, keep the first remaining line as
-        # the slot name.
+
+        # Get all text in the <li>, drop known status labels and the
+        # "Register" link text, keep the first remaining line as the name.
         lines = [
             line.strip() for line in li.get_text("\n").split("\n")
             if line.strip() and line.strip() not in (
-                "Available", "All Spots Filled", "Register"
+                "Available", "All Spots Filled", "Medical Available", "Register"
             )
         ]
         if not lines:
