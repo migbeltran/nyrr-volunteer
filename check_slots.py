@@ -19,6 +19,10 @@ from bs4 import BeautifulSoup
 
 URLS = [
     "https://events.nyrr.org/nyrr-team-champions-5m-volunteers",
+    "https://events.nyrr.org/tcs-new-york-city-marathon-training-series-12m-volunteers",
+    "https://events.nyrr.org/nyrr-jersey-city-5k-volunteers",
+    "https://events.nyrr.org/nyrr-staten-island-half-volunteers",
+    "https://events.nyrr.org/nyrr-ted-corbitt-15k-volunteers",
     # add more event URLs here as needed
 ]
 
