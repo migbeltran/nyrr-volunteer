@@ -14,7 +14,7 @@ import json
 import os
 import re
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 import requests
 from bs4 import BeautifulSoup
@@ -23,11 +23,22 @@ from bs4 import BeautifulSoup
 
 URLS = [
     "https://events.nyrr.org/nyrr-team-champions-5m-volunteers",
+    "https://events.nyrr.org/nyrr-start-line-series-manhattan-volunteers",
+    "https://events.nyrr.org/nyrr-summer-speed-series-1-volunteers",
+    "https://events.nyrr.org/percy-sutton-harlem-5k-volunteers",
+    "https://events.nyrr.org/nyrr-summer-speed-series-2-volunteers",
     "https://events.nyrr.org/tcs-new-york-city-marathon-training-series-12m-volunteers",
+    "https://events.nyrr.org/nyrr-summer-speed-series-3-volunteers",
+    "https://events.nyrr.org/nyrr-start-line-series-bronx-volunteers",
+    "https://events.nyrr.org/nyrr-summer-speed-series-4-volunteers",
+    "https://events.nyrr.org/nyrr-summer-speed-series-5-volunteers",
+    "https://events.nyrr.org/new-balance-5th-avenue-mile-volunteers",
+    "https://events.nyrr.org/tcs-new-york-city-training-series-18m-volunteers",
+    "https://events.nyrr.org/vcp-cross-country-1-volunteers",
+    "https://events.nyrr.org/vcp-cross-country-2-volunteers",
     "https://events.nyrr.org/nyrr-jersey-city-5k-volunteers",
     "https://events.nyrr.org/nyrr-staten-island-half-volunteers",
     "https://events.nyrr.org/nyrr-ted-corbitt-15k-volunteers",
-    "https://events.nyrr.org/vcp-cross-country-2-volunteers",
     # add more event URLs here as needed
 ]
 
@@ -69,13 +80,37 @@ COLOR_STATUS_MAP = {
 }
 IGNORED_COLORS = {"#1E90FF"}  # Medical Available - skip entirely
 
+# Events more than this many days past their date are dropped from
+# tracking entirely - no more scraping, no more notifications for them.
+EXPIRY_DAYS_AFTER_EVENT = 3
+
+# Matches the site's date format, e.g. "Sunday, July 26, 2026 at 05:00 AM"
+EVENT_DATE_FORMAT = "%A, %B %d, %Y at %I:%M %p"
+
 # --- Scraping ----------------------------------------------------------
 
-def fetch_slots(url):
-    """Returns a dict of {slot_name: status} for one event page."""
+def fetch_event_date(soup):
+    """Returns a datetime (ET, naive) for the event, or None if not found."""
+    date_div = soup.find(
+        "div",
+        class_=lambda c: c and "event-info-bar-text-color" in c,
+    )
+    if not date_div:
+        return None
+    text = date_div.get_text(strip=True)
+    try:
+        return datetime.strptime(text, EVENT_DATE_FORMAT)
+    except ValueError:
+        return None
+
+
+def fetch_event_data(url):
+    """Returns (event_date, {slot_name: status}) for one event page."""
     resp = requests.get(url, headers=HEADERS, timeout=20)
     resp.raise_for_status()
     soup = BeautifulSoup(resp.text, "html.parser")
+
+    event_date = fetch_event_date(soup)
 
     slots = {}
     # Each assignment option is a <li> containing a status tag (<p> or <span>)
@@ -112,7 +147,7 @@ def fetch_slots(url):
         slot_name = lines[0]
         slots[slot_name] = status
 
-    return slots
+    return event_date, slots
 
 
 # --- State handling ------------------------------------------------------
@@ -157,26 +192,70 @@ def main():
     changes = []
     summary_lines = []
 
+    now_et = datetime.now(ET_ZONE)
+    now_et_naive = now_et.replace(tzinfo=None)  # for comparing against parsed event dates
+
+    events_with_openings = 0
+    events_fully_booked = 0
+
     for url in URLS:
         try:
-            slots = fetch_slots(url)
+            event_date, slots = fetch_event_data(url)
         except Exception as e:
             summary_lines.append(f"[ERROR] {url}: {e}")
             continue
 
+        # Skip (and stop tracking) events more than EXPIRY_DAYS_AFTER_EVENT
+        # days in the past. They're dropped from new_slots_by_url entirely,
+        # so old comparison data for them naturally falls out of state too.
+        if event_date is not None:
+            expiry_cutoff = event_date + timedelta(days=EXPIRY_DAYS_AFTER_EVENT)
+            if now_et_naive > expiry_cutoff:
+                summary_lines.append(
+                    f"\n{url}\n  (event was {event_date:%b %d, %Y} - "
+                    f"more than {EXPIRY_DAYS_AFTER_EVENT} days past, no longer tracked)"
+                )
+                continue
+
         new_slots_by_url[url] = slots
         old_slots = old_slots_by_url.get(url, {})
 
-        summary_lines.append(f"\n{url}")
+        date_label = f" ({event_date:%b %d, %Y})" if event_date else ""
+        available_lines = [
+            f"  🟢 {name}: {status}"
+            for name, status in slots.items()
+            if status == "Available"
+        ]
+        if available_lines:
+            events_with_openings += 1
+            summary_lines.append(f"\n{url}{date_label}")
+            summary_lines.extend(available_lines)
+        elif slots:
+            # Page scraped fine, just nothing open - counted but not listed,
+            # so a scrape failure (empty slots at all) doesn't get miscounted
+            # as "fully booked".
+            events_fully_booked += 1
+        # (Filled/red slots are intentionally left out of the summary -
+        # they're just noise once a slot's taken. Change alerts below still
+        # cover a slot flipping TO filled, since that's still useful info.)
+
         for name, status in slots.items():
-            icon = "🟢" if status == "Available" else "🔴"
-            summary_lines.append(f"  {icon} {name}: {status}")
             old_status = old_slots.get(name)
             if old_status is not None and old_status != status:
+                icon = "🟢" if status == "Available" else "🔴"
                 old_icon = "🟢" if old_status == "Available" else "🔴"
                 changes.append(
-                    f"{old_icon}->{icon} {name} ({url}): {old_status} -> {status}"
+                    f"{old_icon}->{icon} {name}{date_label} ({url}): {old_status} -> {status}"
                 )
+
+    # Compact footer so it's clear all events were actually checked, even
+    # though fully-booked ones don't get individually listed above.
+    total_checked = events_with_openings + events_fully_booked
+    if total_checked > 0:
+        summary_lines.append(
+            f"\n({events_with_openings} of {total_checked} events have "
+            f"openings; {events_fully_booked} fully booked)"
+        )
 
     # Immediate alert on any change
     if changes:
