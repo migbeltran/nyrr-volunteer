@@ -87,6 +87,16 @@ EXPIRY_DAYS_AFTER_EVENT = 3
 # Matches the site's date format, e.g. "Sunday, July 26, 2026 at 05:00 AM"
 EVENT_DATE_FORMAT = "%A, %B %d, %Y at %I:%M %p"
 
+# Slot names containing any of these (case-insensitive) are excluded
+# entirely - not shown in the summary, and not reported in change alerts.
+EXCLUDED_NAME_SUBSTRINGS = ["leaders", "(no +1)"]
+
+
+def is_excluded_slot(name):
+    lower = name.lower()
+    return any(sub in lower for sub in EXCLUDED_NAME_SUBSTRINGS)
+
+
 # --- Scraping ----------------------------------------------------------
 
 def fetch_event_date(soup):
@@ -221,16 +231,20 @@ def main():
         old_slots = old_slots_by_url.get(url, {})
 
         date_label = f" ({event_date:%b %d, %Y})" if event_date else ""
+        visible_slots = {
+            name: status for name, status in slots.items()
+            if not is_excluded_slot(name)
+        }
         available_lines = [
             f"  🟢 {name}: {status}"
-            for name, status in slots.items()
+            for name, status in visible_slots.items()
             if status == "Available"
         ]
         if available_lines:
             events_with_openings += 1
             summary_lines.append(f"\n{url}{date_label}")
             summary_lines.extend(available_lines)
-        elif slots:
+        elif visible_slots:
             # Page scraped fine, just nothing open - counted but not listed,
             # so a scrape failure (empty slots at all) doesn't get miscounted
             # as "fully booked".
@@ -240,6 +254,8 @@ def main():
         # cover a slot flipping TO filled, since that's still useful info.)
 
         for name, status in slots.items():
+            if is_excluded_slot(name):
+                continue
             old_status = old_slots.get(name)
             if old_status is not None and old_status != status:
                 icon = "🟢" if status == "Available" else "🔴"
@@ -261,7 +277,7 @@ def main():
     if changes:
         send_notification(
             "Volunteer slot change!",
-            "\n".join(changes),
+            "\n".join(changes) + "\n\nMy girlfriend is amazing!",
             priority="high",
         )
 
@@ -278,9 +294,10 @@ def main():
 
     new_last_summary_date = old_state.get("last_summary_date")
     if should_send_summary:
+        summary_body = "\n".join(summary_lines) if summary_lines else "No data collected."
         send_notification(
             "Volunteer slots - status check",
-            "\n".join(summary_lines) if summary_lines else "No data collected.",
+            summary_body + "\n\nMy girlfriend is amazing!",
             priority="default",
         )
         # Only actually mark today "done" for real (non-forced) sends, so
