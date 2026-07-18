@@ -3,8 +3,9 @@
 Checks NYRR (Haku Sports) volunteer pages for slot availability.
 - Sends an ntfy push notification immediately if any slot's status changed
   since the last run (e.g. Filled -> Available, or vice versa).
-- Sends a full status summary every time it's run (intended to run at
-  11am and 8pm ET via GitHub Actions cron).
+- Sends a full status summary once per Eastern calendar day, on the first
+  run that happens after 8pm ET (robust to GitHub Actions schedule drift -
+  see should_send_summary logic in main()).
 
 State is persisted in state.json so runs can compare against the past.
 """
@@ -13,7 +14,8 @@ import json
 import os
 import re
 import sys
-from datetime import datetime, timezone
+from datetime import datetime
+from zoneinfo import ZoneInfo
 import requests
 from bs4 import BeautifulSoup
 
@@ -31,14 +33,15 @@ URLS = [
 
 STATE_FILE = "state.json"
 
-# The full summary notification only fires once a day, at the hour below
-# (in UTC). Everything else is a silent background check that only alerts
-# on an actual change.
-#   0 UTC = 8:00 PM EDT (summer time, UTC-4)
-# NOTE: when NYC switches to EST (UTC-5) in November, 8pm ET becomes 01:00
-# UTC. Update SUMMARY_HOUR_UTC to 1 at that point, or the summary will
-# silently start firing at 7pm ET instead of 8pm.
-SUMMARY_HOUR_UTC = 0
+# The full summary only needs to fire once per day, after 8pm ET. Rather
+# than checking for an exact hour match (which breaks if GitHub's scheduler
+# drifts, as it often does), we track the LAST DATE a summary was sent.
+# Any run - whenever it actually happens to fire - that occurs after 8pm ET
+# on a day the summary hasn't gone out yet will send it and mark that date
+# done. This is robust to scheduling jitter and handles DST automatically
+# via the America/New_York zone (no manual UTC-offset updates needed).
+SUMMARY_HOUR_ET = 20  # 8pm local time, Eastern (auto-adjusts for DST)
+ET_ZONE = ZoneInfo("America/New_York")
 
 # workflow_dispatch (manual "Run workflow" clicks) always sends the summary
 # too, so you can test without waiting for the right hour.
@@ -118,7 +121,7 @@ def load_state():
     if os.path.exists(STATE_FILE):
         with open(STATE_FILE, "r") as f:
             return json.load(f)
-    return {}
+    return {"slots": {}, "last_summary_date": None}
 
 
 def save_state(state):
@@ -149,7 +152,8 @@ def send_notification(title, message, priority="default"):
 
 def main():
     old_state = load_state()
-    new_state = {}
+    old_slots_by_url = old_state.get("slots", {})
+    new_slots_by_url = {}
     changes = []
     summary_lines = []
 
@@ -160,8 +164,8 @@ def main():
             summary_lines.append(f"[ERROR] {url}: {e}")
             continue
 
-        new_state[url] = slots
-        old_slots = old_state.get(url, {})
+        new_slots_by_url[url] = slots
+        old_slots = old_slots_by_url.get(url, {})
 
         summary_lines.append(f"\n{url}")
         for name, status in slots.items():
@@ -182,17 +186,34 @@ def main():
             priority="high",
         )
 
-    # Only send the full summary once a day (or if manually forced via
-    # workflow_dispatch, for easy testing). Every other hourly run stays
-    # silent unless a change was detected above.
-    current_hour_utc = datetime.now(timezone.utc).hour
-    if FORCE_SUMMARY or current_hour_utc == SUMMARY_HOUR_UTC:
+    # Send the full summary once per Eastern calendar day, on the first run
+    # that happens after 8pm ET - whenever that actually fires. This is
+    # robust to GitHub's scheduler drifting, unlike checking for an exact
+    # hour match.
+    now_et = datetime.now(ET_ZONE)
+    today_et_str = now_et.strftime("%Y-%m-%d")
+    summary_already_sent_today = old_state.get("last_summary_date") == today_et_str
+    should_send_summary = FORCE_SUMMARY or (
+        now_et.hour >= SUMMARY_HOUR_ET and not summary_already_sent_today
+    )
+
+    new_last_summary_date = old_state.get("last_summary_date")
+    if should_send_summary:
         send_notification(
             "Volunteer slots - status check",
             "\n".join(summary_lines) if summary_lines else "No data collected.",
             priority="default",
         )
+        # Only actually mark today "done" for real (non-forced) sends, so
+        # manual test runs via workflow_dispatch don't block tonight's
+        # real scheduled summary from also going out.
+        if not FORCE_SUMMARY:
+            new_last_summary_date = today_et_str
 
+    new_state = {
+        "slots": new_slots_by_url,
+        "last_summary_date": new_last_summary_date,
+    }
     save_state(new_state)
 
 
