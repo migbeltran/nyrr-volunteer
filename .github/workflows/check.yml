@@ -1,12 +1,16 @@
 name: Check volunteer slots
 
 on:
-  schedule:
-    # Runs every hour, on the hour, in UTC. The script itself decides
-    # whether to send the full summary (once/day) or stay silent unless
-    # something changed - see SUMMARY_HOUR_UTC in check_slots.py.
-    - cron: "0 * * * *"
-  workflow_dispatch: {}  # manual "Run workflow" trigger always sends the summary, for testing
+  # GitHub's native "schedule" trigger is unreliable (can drift by hours,
+  # sometimes skips windows entirely). Instead, an external service
+  # (cron-job.org) pings this via the GitHub API to fire workflow_dispatch
+  # on an actual reliable hourly schedule.
+  workflow_dispatch:
+    inputs:
+      force_summary:
+        description: "Force the full summary notification (for manual testing)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write  # needed so the workflow can commit the updated state.json
@@ -29,7 +33,7 @@ jobs:
       - name: Run slot checker
         env:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
-          FORCE_SUMMARY: ${{ github.event_name == 'workflow_dispatch' && 'true' || 'false' }}
+          FORCE_SUMMARY: ${{ github.event.inputs.force_summary }}
         run: python check_slots.py
 
       - name: Commit updated state file
