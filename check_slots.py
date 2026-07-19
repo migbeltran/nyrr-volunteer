@@ -97,6 +97,15 @@ def is_excluded_slot(name):
     return any(sub in lower for sub in EXCLUDED_NAME_SUBSTRINGS)
 
 
+def status_icon(status):
+    if status == "Available":
+        return "🟢"
+    elif status == "All Spots Filled":
+        return "🔴"
+    else:
+        return "🟡"  # unrecognized color/status - flagged for visibility
+
+
 # --- Scraping ----------------------------------------------------------
 
 def fetch_event_date(soup):
@@ -135,10 +144,12 @@ def fetch_event_data(url):
 
         if color in IGNORED_COLORS:
             continue  # e.g. "Medical Available" - not tracked
-        if color not in COLOR_STATUS_MAP:
-            continue  # unrecognized color, not a status tag we care about
 
-        status = COLOR_STATUS_MAP[color]
+        # Any color we don't recognize gets tracked as "Unknown (color)"
+        # rather than silently dropped - this way a status change TO an
+        # unfamiliar color still triggers a change alert, instead of the
+        # slot just vanishing from tracking unnoticed.
+        status = COLOR_STATUS_MAP.get(color, f"Unknown status (color {color})")
 
         li = tag.find_parent("li")
         if not li:
@@ -235,15 +246,18 @@ def main():
             name: status for name, status in slots.items()
             if not is_excluded_slot(name)
         }
-        available_lines = [
-            f"  🟢 {name}: {status}"
+        # Show both truly-Available slots AND any unrecognized status - the
+        # latter means the site is showing a color we haven't mapped yet,
+        # worth surfacing even outside of a change alert.
+        noteworthy_lines = [
+            f"  {status_icon(status)} {name}: {status}"
             for name, status in visible_slots.items()
-            if status == "Available"
+            if status not in ("All Spots Filled",)
         ]
-        if available_lines:
+        if noteworthy_lines:
             events_with_openings += 1
             summary_lines.append(f"\n{url}{date_label}")
-            summary_lines.extend(available_lines)
+            summary_lines.extend(noteworthy_lines)
         elif visible_slots:
             # Page scraped fine, just nothing open - counted but not listed,
             # so a scrape failure (empty slots at all) doesn't get miscounted
@@ -258,8 +272,8 @@ def main():
                 continue
             old_status = old_slots.get(name)
             if old_status is not None and old_status != status:
-                icon = "🟢" if status == "Available" else "🔴"
-                old_icon = "🟢" if old_status == "Available" else "🔴"
+                icon = status_icon(status)
+                old_icon = status_icon(old_status)
                 changes.append(
                     f"{old_icon}->{icon} {name}{date_label} ({url}): {old_status} -> {status}"
                 )
