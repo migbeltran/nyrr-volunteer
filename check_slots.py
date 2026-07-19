@@ -275,9 +275,10 @@ def main():
 
     # Immediate alert on any change
     if changes:
+        checked_at = now_et.strftime("%Y-%m-%d %I:%M:%S %p %Z")
         send_notification(
             "Volunteer slot change!",
-            "\n".join(changes) + "\n\nMy girlfriend is amazing!",
+            "\n".join(changes) + f"\n\nChecked: {checked_at}\n\nMy girlfriend is amazing!",
             priority="high",
         )
 
@@ -294,10 +295,11 @@ def main():
 
     new_last_summary_date = old_state.get("last_summary_date")
     if should_send_summary:
+        checked_at = now_et.strftime("%Y-%m-%d %I:%M:%S %p %Z")
         summary_body = "\n".join(summary_lines) if summary_lines else "No data collected."
         send_notification(
             "Volunteer slots - status check",
-            summary_body + "\n\nMy girlfriend is amazing!",
+            summary_body + f"\n\nChecked: {checked_at}\n\nMy girlfriend is amazing!",
             priority="default",
         )
         # Only actually mark today "done" for real (non-forced) sends, so
@@ -309,6 +311,7 @@ def main():
     new_state = {
         "slots": new_slots_by_url,
         "last_summary_date": new_last_summary_date,
+        "last_run_at": now_et.strftime("%Y-%m-%d %I:%M:%S %p %Z"),
     }
     save_state(new_state)
 
