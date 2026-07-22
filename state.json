@@ -1,13 +1,129 @@
 {
-  "https://events.nyrr.org/nyrr-team-champions-5m-volunteers": {
-    "Volunteer Leaders and Leaders in Training (NO +1)": "Available",
-    "Bag Check": "All Spots Filled",
-    "Course Marshal North": "All Spots Filled",
-    "Course Marshal South": "All Spots Filled",
-    "Fluid Station North": "All Spots Filled",
-    "Fluid Station South": "All Spots Filled",
-    "NYRR Ambassador": "All Spots Filled",
-    "Post-Race Amenities": "All Spots Filled",
-    "Start and Finish": "All Spots Filled"
-  }
+  "slots": {
+    "https://events.nyrr.org/nyrr-team-champions-5m-volunteers": {
+      "Bag Check": "All Spots Filled",
+      "Course Marshal North": "All Spots Filled",
+      "Course Marshal South": "All Spots Filled",
+      "Fluid Station North": "All Spots Filled",
+      "Fluid Station South": "All Spots Filled",
+      "NYRR Ambassador": "All Spots Filled",
+      "Post-Race Amenities": "All Spots Filled",
+      "Start and Finish": "All Spots Filled"
+    },
+    "https://events.nyrr.org/nyrr-start-line-series-manhattan-volunteers": {
+      "Bag Check": "All Spots Filled",
+      "Course Marshal": "All Spots Filled",
+      "Fluid Station": "All Spots Filled",
+      "NYRR Ambassador": "All Spots Filled",
+      "Post-Race Amenities": "All Spots Filled",
+      "Start and Finish": "All Spots Filled"
+    },
+    "https://events.nyrr.org/nyrr-summer-speed-series-1-volunteers": {
+      "Track and Field Marshal": "All Spots Filled"
+    },
+    "https://events.nyrr.org/percy-sutton-harlem-5k-volunteers": {
+      "Volunteer Leaders and Leaders in Training (NO +1)": "Near Capacity",
+      "Bag Check": "All Spots Filled",
+      "Course Marshal": "All Spots Filled",
+      "Fluid Station": "All Spots Filled",
+      "Post-Race Amenities": "All Spots Filled",
+      "NYRR Ambassador": "All Spots Filled",
+      "Start and Finish": "All Spots Filled"
+    },
+    "https://events.nyrr.org/nyrr-summer-speed-series-2-volunteers": {
+      "Track and Field Marshal": "All Spots Filled"
+    },
+    "https://events.nyrr.org/tcs-new-york-city-marathon-training-series-12m-volunteers": {
+      "Volunteer Leaders and Leaders in Training (NO +1)": "Available",
+      "Bag Check": "All Spots Filled",
+      "Course Marshal North": "All Spots Filled",
+      "Course Marshal South": "All Spots Filled",
+      "Fluid Station North": "All Spots Filled",
+      "Fluid Station South": "All Spots Filled",
+      "Medical Volunteers (Must be licensed in NYS)": "Medical Available",
+      "NYRR Ambassador": "All Spots Filled",
+      "Post-Race Amenities": "All Spots Filled",
+      "Start and Finish": "All Spots Filled"
+    },
+    "https://events.nyrr.org/nyrr-summer-speed-series-3-volunteers": {
+      "Track and Field Marshal": "All Spots Filled"
+    },
+    "https://events.nyrr.org/nyrr-start-line-series-bronx-volunteers": {
+      "Bag Check": "All Spots Filled",
+      "Course Marshal": "All Spots Filled",
+      "Fluid Station": "All Spots Filled",
+      "NYRR Ambassador": "All Spots Filled",
+      "Post-Race Amenities": "All Spots Filled",
+      "Start and Finish": "All Spots Filled"
+    },
+    "https://events.nyrr.org/nyrr-summer-speed-series-4-volunteers": {
+      "Track and Field Marshal": "All Spots Filled"
+    },
+    "https://events.nyrr.org/nyrr-summer-speed-series-5-volunteers": {
+      "Track and Field Marshal": "All Spots Filled"
+    },
+    "https://events.nyrr.org/new-balance-5th-avenue-mile-volunteers": {
+      "Volunteer Leaders and Leaders in Training (NO +1)": "All Spots Filled",
+      "Course Marshal": "All Spots Filled",
+      "Finish Area Bag Check": "All Spots Filled",
+      "Finish Area NYRR Ambassador": "All Spots Filled",
+      "Post-Race Amenities": "All Spots Filled",
+      "Start Area Bag Check": "All Spots Filled",
+      "Start Area NYRR Ambassador": "All Spots Filled",
+      "Start Corral Marshal": "All Spots Filled"
+    },
+    "https://events.nyrr.org/tcs-new-york-city-training-series-18m-volunteers": {
+      "Volunteer Leaders and Leaders in Training": "Available",
+      "Bag Check": "All Spots Filled",
+      "Course Marshal North": "All Spots Filled",
+      "Course Marshal South": "All Spots Filled",
+      "Fluid Station North": "All Spots Filled",
+      "Fluid Station South": "All Spots Filled",
+      "Medical Volunteers (Must be licensed in NYS)": "Medical Available",
+      "NYRR Ambassador": "All Spots Filled",
+      "Post-Race Amenities": "All Spots Filled",
+      "Start and Finish": "All Spots Filled"
+    },
+    "https://events.nyrr.org/vcp-cross-country-1-volunteers": {
+      "Cross Country Assistant": "All Spots Filled"
+    },
+    "https://events.nyrr.org/vcp-cross-country-2-volunteers": {
+      "Cross Country Assistant": "All Spots Filled"
+    },
+    "https://events.nyrr.org/nyrr-jersey-city-5k-volunteers": {
+      "Volunteer Leaders and Leaders in Training (NO +1)": "Available",
+      "Bag Check": "All Spots Filled",
+      "Course Marshal": "All Spots Filled",
+      "Fluid Station": "All Spots Filled",
+      "NYRR Ambassador": "All Spots Filled",
+      "Post-Race Amenities": "All Spots Filled",
+      "Start and Finish": "All Spots Filled",
+      "Transportation Marshal": "All Spots Filled"
+    },
+    "https://events.nyrr.org/nyrr-staten-island-half-volunteers": {
+      "Volunteer Leaders and Leaders in Training (NO +1)": "Available",
+      "Bag Check": "All Spots Filled",
+      "Fluid Station": "All Spots Filled",
+      "Green Team": "All Spots Filled",
+      "Medals Distribution": "All Spots Filled",
+      "Medical Volunteers (Must be licensed in NYS)": "Medical Available",
+      "NYRR Ambassador": "All Spots Filled",
+      "Post-Race Amenities": "All Spots Filled",
+      "Start and Finish": "All Spots Filled"
+    },
+    "https://events.nyrr.org/nyrr-ted-corbitt-15k-volunteers": {
+      "Volunteer Leaders and Leaders in Training (NO +1)": "Available",
+      "Bag Check": "All Spots Filled",
+      "Course Marshal North": "All Spots Filled",
+      "Course Marshal South": "All Spots Filled",
+      "Fluid Station North": "All Spots Filled",
+      "Fluid Station South": "All Spots Filled",
+      "Medals Distribution": "All Spots Filled",
+      "NYRR Ambassador": "All Spots Filled",
+      "Post-Race Amenities": "All Spots Filled",
+      "Start and Finish": "All Spots Filled"
+    }
+  },
+  "last_summary_date": null,
+  "last_run_at": "2026-07-22 06:00:32 PM EDT"
 }
