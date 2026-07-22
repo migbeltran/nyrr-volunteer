@@ -70,15 +70,20 @@ HEADERS = {
 # Status labels are color-coded on this platform rather than always using
 # the same wording. We match by color instead of exact text, so we're not
 # thrown off by variants like "All Spots Filled" vs. some other future label.
-#   #FF0000 (red)    -> Filled
-#   #15803D (green)  -> Available
-#   #1E90FF (blue)   -> "Medical Available" - deliberately ignored/skipped,
-#                        per user preference (not a regular volunteer slot).
+# ALL colors are captured during parsing, unconditionally - no exclusions
+# happen at this stage. Filtering/suppression decisions happen later, in
+# is_notifiable_slot(), so state.json always reflects the full raw truth.
 COLOR_STATUS_MAP = {
     "#FF0000": "All Spots Filled",
     "#15803D": "Available",
+    "#1E90FF": "Medical Available",
+    "#DAA520": "Near Capacity",
 }
-IGNORED_COLORS = {"#1E90FF"}  # Medical Available - skip entirely
+
+# Statuses in this set are captured and saved to state.json like anything
+# else, but are suppressed from notifications/summary - a category-based
+# decision, independent of the slot's name.
+HIDDEN_STATUS_CATEGORIES = {"Medical Available"}
 
 # Events more than this many days past their date are dropped from
 # tracking entirely - no more scraping, no more notifications for them.
@@ -87,14 +92,32 @@ EXPIRY_DAYS_AFTER_EVENT = 3
 # Matches the site's date format, e.g. "Sunday, July 26, 2026 at 05:00 AM"
 EVENT_DATE_FORMAT = "%A, %B %d, %Y at %I:%M %p"
 
-# Slot names containing any of these (case-insensitive) are excluded
-# entirely - not shown in the summary, and not reported in change alerts.
+# Slot names containing any of these (case-insensitive) are suppressed
+# from notifications/summary - a name-based decision, independent of
+# the slot's status/color.
 EXCLUDED_NAME_SUBSTRINGS = ["leaders", "(no +1)"]
 
 
 def is_excluded_slot(name):
     lower = name.lower()
     return any(sub in lower for sub in EXCLUDED_NAME_SUBSTRINGS)
+
+
+def is_notifiable_slot(name, status):
+    """Single source of truth for whether a slot should ever appear in a
+    notification or the daily summary. Everything is still scraped and
+    saved to state.json regardless of this decision - this only affects
+    what the user gets alerted about.
+
+    Unrecognized/new statuses default to notifiable (visible) unless
+    explicitly added to HIDDEN_STATUS_CATEGORIES - so nothing new on the
+    site goes unnoticed by default.
+    """
+    if is_excluded_slot(name):
+        return False
+    if status in HIDDEN_STATUS_CATEGORIES:
+        return False
+    return True
 
 
 def status_icon(status):
@@ -123,12 +146,13 @@ def fetch_event_date(soup):
         return None
 
 
-def fetch_event_data(url):
-    """Returns (event_date, {slot_name: status}) for one event page."""
-    resp = requests.get(url, headers=HEADERS, timeout=20)
-    resp.raise_for_status()
-    soup = BeautifulSoup(resp.text, "html.parser")
+def parse_html(html):
+    """Returns (event_date, {slot_name: status}) parsed from raw HTML text.
 
+    Separated from fetch_event_data() so this logic can be unit-tested
+    against a saved/fake HTML snippet, with no network call involved.
+    """
+    soup = BeautifulSoup(html, "html.parser")
     event_date = fetch_event_date(soup)
 
     slots = {}
@@ -142,26 +166,30 @@ def fetch_event_data(url):
             continue
         color = match.group(1).upper()
 
-        if color in IGNORED_COLORS:
-            continue  # e.g. "Medical Available" - not tracked
+        # The literal text shown in the status tag itself - e.g. "Available",
+        # "All Spots Filled", or any future label like "Near Capacity". We
+        # use this exact text (not a hardcoded guess list) to strip the
+        # status label out of the slot's <li> text below, so a brand new
+        # status wording never gets mistaken for the slot's actual name.
+        status_text = tag.get_text(strip=True)
 
-        # Any color we don't recognize gets tracked as "Unknown (color)"
-        # rather than silently dropped - this way a status change TO an
-        # unfamiliar color still triggers a change alert, instead of the
-        # slot just vanishing from tracking unnoticed.
+        # Every color is captured, unconditionally - including ones we'll
+        # later choose to suppress from notifications (that decision
+        # happens separately, in is_notifiable_slot). Unrecognized colors
+        # get a visible "Unknown status" label rather than being dropped.
         status = COLOR_STATUS_MAP.get(color, f"Unknown status (color {color})")
 
         li = tag.find_parent("li")
         if not li:
             continue
 
-        # Get all text in the <li>, drop known status labels and the
-        # "Register" link text, keep the first remaining line as the name.
+        # Get all text in the <li>, drop the status label (matched exactly,
+        # whatever it says) and the "Register" link text, keep the first
+        # remaining line as the name.
         lines = [
             line.strip() for line in li.get_text("\n").split("\n")
-            if line.strip() and line.strip() not in (
-                "Available", "All Spots Filled", "Medical Available", "Register"
-            )
+            if line.strip() and line.strip() != status_text
+            and line.strip() != "Register"
         ]
         if not lines:
             continue
@@ -169,6 +197,13 @@ def fetch_event_data(url):
         slots[slot_name] = status
 
     return event_date, slots
+
+
+def fetch_event_data(url):
+    """Returns (event_date, {slot_name: status}) for one event page."""
+    resp = requests.get(url, headers=HEADERS, timeout=20)
+    resp.raise_for_status()
+    return parse_html(resp.text)
 
 
 # --- State handling ------------------------------------------------------
@@ -224,6 +259,13 @@ def main():
             event_date, slots = fetch_event_data(url)
         except Exception as e:
             summary_lines.append(f"[ERROR] {url}: {e}")
+            # Carry the last-known-good data forward instead of dropping
+            # it entirely. If we just skipped this URL, next run's
+            # comparison would see old_status=None for every slot here
+            # (since it vanished from state), silently suppressing any
+            # real change-alert for whatever happened during the outage.
+            if url in old_slots_by_url:
+                new_slots_by_url[url] = old_slots_by_url[url]
             continue
 
         # Skip (and stop tracking) events more than EXPIRY_DAYS_AFTER_EVENT
@@ -242,23 +284,23 @@ def main():
         old_slots = old_slots_by_url.get(url, {})
 
         date_label = f" ({event_date:%b %d, %Y})" if event_date else ""
-        visible_slots = {
+        notifiable_slots = {
             name: status for name, status in slots.items()
-            if not is_excluded_slot(name)
+            if is_notifiable_slot(name, status)
         }
         # Show both truly-Available slots AND any unrecognized status - the
         # latter means the site is showing a color we haven't mapped yet,
         # worth surfacing even outside of a change alert.
         noteworthy_lines = [
             f"  {status_icon(status)} {name}: {status}"
-            for name, status in visible_slots.items()
+            for name, status in notifiable_slots.items()
             if status not in ("All Spots Filled",)
         ]
         if noteworthy_lines:
             events_with_openings += 1
             summary_lines.append(f"\n{url}{date_label}")
             summary_lines.extend(noteworthy_lines)
-        elif visible_slots:
+        elif notifiable_slots:
             # Page scraped fine, just nothing open - counted but not listed,
             # so a scrape failure (empty slots at all) doesn't get miscounted
             # as "fully booked".
@@ -268,7 +310,7 @@ def main():
         # cover a slot flipping TO filled, since that's still useful info.)
 
         for name, status in slots.items():
-            if is_excluded_slot(name):
+            if not is_notifiable_slot(name, status):
                 continue
             old_status = old_slots.get(name)
             if old_status is not None and old_status != status:
