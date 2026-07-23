@@ -8,7 +8,7 @@
       "Fluid Station South": "All Spots Filled",
       "NYRR Ambassador": "All Spots Filled",
       "Post-Race Amenities": "All Spots Filled",
-      "Start and Finish": "All Spots Filled"
+      "Start and Finish": "Near Capacity"
     },
     "https://events.nyrr.org/nyrr-start-line-series-manhattan-volunteers": {
       "Bag Check": "All Spots Filled",
@@ -125,5 +125,5 @@
     }
   },
   "last_summary_date": "2026-07-22",
-  "last_run_at": "2026-07-23 10:00:39 AM EDT"
+  "last_run_at": "2026-07-23 11:00:40 AM EDT"
 }
