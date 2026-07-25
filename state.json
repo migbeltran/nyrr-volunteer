@@ -73,7 +73,7 @@
     },
     "https://events.nyrr.org/tcs-new-york-city-training-series-18m-volunteers": {
       "Volunteer Leaders and Leaders in Training": "Available",
-      "Bag Check": "All Spots Filled",
+      "Bag Check": "Near Capacity",
       "Course Marshal North": "All Spots Filled",
       "Course Marshal South": "All Spots Filled",
       "Fluid Station North": "All Spots Filled",
@@ -124,5 +124,5 @@
     }
   },
   "last_summary_date": "2026-07-24",
-  "last_run_at": "2026-07-25 07:00:31 PM EDT"
+  "last_run_at": "2026-07-25 07:30:32 PM EDT"
 }
