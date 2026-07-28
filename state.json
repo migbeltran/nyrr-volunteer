@@ -12,10 +12,11 @@
       "Track and Field Marshal": "All Spots Filled"
     },
     "https://events.nyrr.org/percy-sutton-harlem-5k-volunteers": {
-      "Volunteer Leaders and Leaders in Training (NO +1)": "Near Capacity",
+      "Volunteer Leaders and Leaders in Training (NO +1)": "Available",
       "Bag Check": "All Spots Filled",
       "Course Marshal": "All Spots Filled",
       "Fluid Station": "All Spots Filled",
+      "Pre-Race Water & Cup Zero Support": "Available",
       "Post-Race Amenities": "All Spots Filled",
       "NYRR Ambassador": "All Spots Filled",
       "Start and Finish": "All Spots Filled"
@@ -111,5 +112,5 @@
     }
   },
   "last_summary_date": "2026-07-27",
-  "last_run_at": "2026-07-28 11:30:40 AM EDT"
+  "last_run_at": "2026-07-28 12:00:38 PM EDT"
 }
