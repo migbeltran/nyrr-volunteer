@@ -15,7 +15,7 @@
       "Bag Check": "All Spots Filled",
       "Course Marshal": "All Spots Filled",
       "Fluid Station": "All Spots Filled",
-      "Pre-Race Water & Cup Zero Support": "Near Capacity",
+      "Pre-Race Water & Cup Zero Support": "All Spots Filled",
       "Post-Race Amenities": "All Spots Filled",
       "NYRR Ambassador": "All Spots Filled",
       "Start and Finish": "All Spots Filled",
@@ -112,5 +112,5 @@
     }
   },
   "last_summary_date": "2026-07-29",
-  "last_run_at": "2026-07-30 03:00:29 PM EDT"
+  "last_run_at": "2026-07-30 03:30:38 PM EDT"
 }
