@@ -42,7 +42,7 @@
       "Fluid Station": "All Spots Filled",
       "NYRR Ambassador": "All Spots Filled",
       "Post-Race Amenities": "All Spots Filled",
-      "Start and Finish": "All Spots Filled"
+      "Start and Finish": "Near Capacity"
     },
     "https://events.nyrr.org/nyrr-summer-speed-series-4-volunteers": {
       "Track and Field Marshal": "All Spots Filled"
@@ -64,7 +64,7 @@
       "Volunteer Leaders and Leaders in Training": "All Spots Filled",
       "Bag Check": "All Spots Filled",
       "Course Marshal North": "All Spots Filled",
-      "Course Marshal South": "All Spots Filled",
+      "Course Marshal South": "Near Capacity",
       "Fluid Station North": "All Spots Filled",
       "Fluid Station South": "All Spots Filled",
       "Medical Volunteers (Must be licensed in NYS)": "Medical Available",
@@ -112,5 +112,5 @@
     }
   },
   "last_summary_date": "2026-07-30",
-  "last_run_at": "2026-07-31 12:00:36 PM EDT"
+  "last_run_at": "2026-07-31 12:30:27 PM EDT"
 }
