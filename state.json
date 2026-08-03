@@ -24,7 +24,7 @@
     "https://events.nyrr.org/nyrr-summer-speed-series-2-volunteers": {},
     "https://events.nyrr.org/tcs-new-york-city-marathon-training-series-12m-volunteers": {
       "Volunteer Leaders and Leaders in Training (NO +1)": "Available",
-      "Bag Check": "All Spots Filled",
+      "Bag Check": "Near Capacity",
       "Course Marshal North": "All Spots Filled",
       "Course Marshal South": "All Spots Filled",
       "Fluid Station North": "All Spots Filled",
@@ -73,7 +73,7 @@
       "Start and Finish": "All Spots Filled"
     },
     "https://events.nyrr.org/vcp-cross-country-1-volunteers": {
-      "Cross Country Assistant": "All Spots Filled"
+      "Cross Country Assistant": "Near Capacity"
     },
     "https://events.nyrr.org/vcp-cross-country-2-volunteers": {
       "Cross Country Assistant": "All Spots Filled"
@@ -112,5 +112,5 @@
     }
   },
   "last_summary_date": "2026-08-02",
-  "last_run_at": "2026-08-03 06:00:31 PM EDT"
+  "last_run_at": "2026-08-03 06:30:27 PM EDT"
 }
