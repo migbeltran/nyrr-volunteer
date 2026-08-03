@@ -9,7 +9,7 @@
       "Start and Finish": "All Spots Filled"
     },
     "https://events.nyrr.org/nyrr-summer-speed-series-1-volunteers": {
-      "Track and Field Marshal": "All Spots Filled"
+      "Track and Field Marshal": "Near Capacity"
     },
     "https://events.nyrr.org/percy-sutton-harlem-5k-volunteers": {
       "Bag Check": "All Spots Filled",
@@ -19,7 +19,7 @@
       "Post-Race Amenities": "All Spots Filled",
       "NYRR Ambassador": "All Spots Filled",
       "Start and Finish": "All Spots Filled",
-      "Youth Event Assistant": "All Spots Filled"
+      "Youth Event Assistant": "Near Capacity"
     },
     "https://events.nyrr.org/nyrr-summer-speed-series-2-volunteers": {},
     "https://events.nyrr.org/tcs-new-york-city-marathon-training-series-12m-volunteers": {
@@ -112,5 +112,5 @@
     }
   },
   "last_summary_date": "2026-08-02",
-  "last_run_at": "2026-08-02 10:30:31 PM EDT"
+  "last_run_at": "2026-08-02 11:00:36 PM EDT"
 }
