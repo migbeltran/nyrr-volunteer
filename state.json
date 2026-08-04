@@ -19,7 +19,7 @@
       "Post-Race Amenities": "All Spots Filled",
       "NYRR Ambassador": "All Spots Filled",
       "Start and Finish": "All Spots Filled",
-      "Youth Event Assistant": "Near Capacity"
+      "Youth Event Assistant": "All Spots Filled"
     },
     "https://events.nyrr.org/nyrr-summer-speed-series-2-volunteers": {},
     "https://events.nyrr.org/tcs-new-york-city-marathon-training-series-12m-volunteers": {
@@ -29,7 +29,7 @@
       "Course Marshal South": "All Spots Filled",
       "Fluid Station North": "All Spots Filled",
       "Fluid Station South": "All Spots Filled",
-      "NYRR Ambassador": "Near Capacity",
+      "NYRR Ambassador": "All Spots Filled",
       "Post-Race Amenities": "All Spots Filled",
       "Start and Finish": "All Spots Filled"
     },
@@ -113,5 +113,5 @@
     }
   },
   "last_summary_date": "2026-08-03",
-  "last_run_at": "2026-08-04 04:30:42 PM EDT"
+  "last_run_at": "2026-08-04 05:00:40 PM EDT"
 }
