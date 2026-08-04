@@ -83,6 +83,7 @@
       "Bag Check": "All Spots Filled",
       "Course Marshal": "All Spots Filled",
       "Fluid Station": "All Spots Filled",
+      "Medical Volunteers (Must be licensed in NJS or NYS EMT)": "Medical Available",
       "Post-Race Amenities": "All Spots Filled",
       "Start and Finish": "All Spots Filled",
       "Transportation Marshal": "All Spots Filled"
@@ -112,5 +113,5 @@
     }
   },
   "last_summary_date": "2026-08-03",
-  "last_run_at": "2026-08-03 10:00:36 PM EDT"
+  "last_run_at": "2026-08-03 10:30:31 PM EDT"
 }
