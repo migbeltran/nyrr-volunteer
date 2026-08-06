@@ -18,7 +18,7 @@
       "Pre-Race Water & Cup Zero Support": "All Spots Filled",
       "Post-Race Amenities": "All Spots Filled",
       "NYRR Ambassador": "All Spots Filled",
-      "Start and Finish": "All Spots Filled",
+      "Start and Finish": "Near Capacity",
       "Youth Event Assistant": "All Spots Filled"
     },
     "https://events.nyrr.org/nyrr-summer-speed-series-2-volunteers": {},
@@ -27,7 +27,7 @@
       "Bag Check": "All Spots Filled",
       "Course Marshal North": "All Spots Filled",
       "Course Marshal South": "All Spots Filled",
-      "Fluid Station North": "All Spots Filled",
+      "Fluid Station North": "Near Capacity",
       "Fluid Station South": "All Spots Filled",
       "NYRR Ambassador": "All Spots Filled",
       "Post-Race Amenities": "All Spots Filled",
@@ -112,5 +112,5 @@
     }
   },
   "last_summary_date": "2026-08-05",
-  "last_run_at": "2026-08-05 09:30:39 PM EDT"
+  "last_run_at": "2026-08-05 10:00:47 PM EDT"
 }
