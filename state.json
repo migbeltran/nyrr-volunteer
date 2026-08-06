@@ -1,16 +1,5 @@
 {
   "slots": {
-    "https://events.nyrr.org/nyrr-start-line-series-manhattan-volunteers": {
-      "Bag Check": "All Spots Filled",
-      "Course Marshal": "All Spots Filled",
-      "Fluid Station": "All Spots Filled",
-      "NYRR Ambassador": "All Spots Filled",
-      "Post-Race Amenities": "All Spots Filled",
-      "Start and Finish": "All Spots Filled"
-    },
-    "https://events.nyrr.org/nyrr-summer-speed-series-1-volunteers": {
-      "Track and Field Marshal": "All Spots Filled"
-    },
     "https://events.nyrr.org/percy-sutton-harlem-5k-volunteers": {
       "Bag Check": "All Spots Filled",
       "Course Marshal": "All Spots Filled",
@@ -112,5 +101,5 @@
     }
   },
   "last_summary_date": "2026-08-05",
-  "last_run_at": "2026-08-06 11:00:47 AM EDT"
+  "last_run_at": "2026-08-06 06:35:46 PM EDT"
 }
