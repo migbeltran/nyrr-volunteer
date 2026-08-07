@@ -17,7 +17,7 @@
       "Course Marshal North": "All Spots Filled",
       "Course Marshal South": "All Spots Filled",
       "Fluid Station North": "Near Capacity",
-      "Fluid Station South": "Near Capacity",
+      "Fluid Station South": "All Spots Filled",
       "NYRR Ambassador": "All Spots Filled",
       "Post-Race Amenities": "All Spots Filled",
       "Start and Finish": "All Spots Filled"
@@ -101,5 +101,5 @@
     }
   },
   "last_summary_date": "2026-08-06",
-  "last_run_at": "2026-08-07 02:00:28 AM EDT"
+  "last_run_at": "2026-08-07 02:30:31 AM EDT"
 }
