@@ -20,7 +20,7 @@
       "Fluid Station South": "All Spots Filled",
       "NYRR Ambassador": "All Spots Filled",
       "Post-Race Amenities": "All Spots Filled",
-      "Start and Finish": "All Spots Filled"
+      "Start and Finish": "Near Capacity"
     },
     "https://events.nyrr.org/nyrr-summer-speed-series-3-volunteers": {
       "Track and Field Marshal": "All Spots Filled"
@@ -100,6 +100,6 @@
       "Start and Finish": "All Spots Filled"
     }
   },
-  "last_summary_date": "2026-08-05",
-  "last_run_at": "2026-08-06 07:30:43 PM EDT"
+  "last_summary_date": "2026-08-06",
+  "last_run_at": "2026-08-06 08:00:40 PM EDT"
 }
