@@ -2,13 +2,13 @@
   "slots": {
     "https://events.nyrr.org/percy-sutton-harlem-5k-volunteers": {
       "Bag Check": "Unknown status (color #808080)",
-      "Course Marshal": "All Spots Filled",
-      "Fluid Station": "All Spots Filled",
+      "Course Marshal": "Unknown status (color #808080)",
+      "Fluid Station": "Unknown status (color #808080)",
       "Pre-Race Water & Cup Zero Support": "Unknown status (color #808080)",
-      "Post-Race Amenities": "All Spots Filled",
+      "Post-Race Amenities": "Unknown status (color #808080)",
       "NYRR Ambassador": "Unknown status (color #808080)",
       "Start and Finish": "Unknown status (color #808080)",
-      "Youth Event Assistant": "All Spots Filled"
+      "Youth Event Assistant": "Unknown status (color #808080)"
     },
     "https://events.nyrr.org/nyrr-summer-speed-series-2-volunteers": {},
     "https://events.nyrr.org/tcs-new-york-city-marathon-training-series-12m-volunteers": {
@@ -101,5 +101,5 @@
     }
   },
   "last_summary_date": "2026-08-07",
-  "last_run_at": "2026-08-08 06:30:32 AM EDT"
+  "last_run_at": "2026-08-08 07:00:29 AM EDT"
 }
