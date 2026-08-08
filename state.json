@@ -1,12 +1,12 @@
 {
   "slots": {
     "https://events.nyrr.org/percy-sutton-harlem-5k-volunteers": {
-      "Bag Check": "All Spots Filled",
+      "Bag Check": "Unknown status (color #808080)",
       "Course Marshal": "All Spots Filled",
       "Fluid Station": "All Spots Filled",
       "Pre-Race Water & Cup Zero Support": "All Spots Filled",
       "Post-Race Amenities": "All Spots Filled",
-      "NYRR Ambassador": "All Spots Filled",
+      "NYRR Ambassador": "Unknown status (color #808080)",
       "Start and Finish": "All Spots Filled",
       "Youth Event Assistant": "All Spots Filled"
     },
@@ -101,5 +101,5 @@
     }
   },
   "last_summary_date": "2026-08-07",
-  "last_run_at": "2026-08-08 05:30:40 AM EDT"
+  "last_run_at": "2026-08-08 06:00:27 AM EDT"
 }
