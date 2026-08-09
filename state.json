@@ -52,7 +52,7 @@
     "https://events.nyrr.org/tcs-new-york-city-training-series-18m-volunteers": {
       "Volunteer Leaders and Leaders in Training": "All Spots Filled",
       "Bag Check": "All Spots Filled",
-      "Course Marshal North": "Near Capacity",
+      "Course Marshal North": "All Spots Filled",
       "Course Marshal South": "All Spots Filled",
       "Fluid Station North": "All Spots Filled",
       "Fluid Station South": "All Spots Filled",
@@ -85,7 +85,7 @@
       "Medical Volunteers (Must be licensed in NYS)": "Medical Available",
       "NYRR Ambassador": "All Spots Filled",
       "Post-Race Amenities": "All Spots Filled",
-      "Start and Finish": "All Spots Filled"
+      "Start and Finish": "Near Capacity"
     },
     "https://events.nyrr.org/nyrr-ted-corbitt-15k-volunteers": {
       "Volunteer Leaders and Leaders in Training (NO +1)": "Available",
@@ -101,5 +101,5 @@
     }
   },
   "last_summary_date": "2026-08-08",
-  "last_run_at": "2026-08-09 11:00:40 AM EDT"
+  "last_run_at": "2026-08-09 11:30:31 AM EDT"
 }
