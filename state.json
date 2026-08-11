@@ -65,7 +65,7 @@
       "Cross Country Assistant": "All Spots Filled"
     },
     "https://events.nyrr.org/vcp-cross-country-2-volunteers": {
-      "Cross Country Assistant": "All Spots Filled"
+      "Cross Country Assistant": "Near Capacity"
     },
     "https://events.nyrr.org/nyrr-jersey-city-5k-volunteers": {
       "Volunteer Leaders and Leaders in Training (NO +1)": "Available",
@@ -101,5 +101,5 @@
     }
   },
   "last_summary_date": "2026-08-10",
-  "last_run_at": "2026-08-11 08:30:38 AM EDT"
+  "last_run_at": "2026-08-11 09:00:41 AM EDT"
 }
