@@ -26,7 +26,7 @@
     },
     "https://events.nyrr.org/nyrr-start-line-series-bronx-volunteers": {
       "Bag Check": "All Spots Filled",
-      "Course Marshal": "All Spots Filled",
+      "Course Marshal": "Near Capacity",
       "Fluid Station": "All Spots Filled",
       "NYRR Ambassador": "All Spots Filled",
       "Post-Race Amenities": "All Spots Filled",
@@ -100,5 +100,5 @@
     }
   },
   "last_summary_date": "2026-08-11",
-  "last_run_at": "2026-08-12 04:30:30 PM EDT"
+  "last_run_at": "2026-08-12 05:00:41 PM EDT"
 }
