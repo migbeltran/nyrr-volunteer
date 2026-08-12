@@ -12,7 +12,6 @@
     },
     "https://events.nyrr.org/nyrr-summer-speed-series-2-volunteers": {},
     "https://events.nyrr.org/tcs-new-york-city-marathon-training-series-12m-volunteers": {
-      "Volunteer Leaders and Leaders in Training (NO +1)": "Available",
       "Bag Check": "All Spots Filled",
       "Course Marshal North": "All Spots Filled",
       "Course Marshal South": "All Spots Filled",
@@ -79,7 +78,7 @@
     "https://events.nyrr.org/nyrr-staten-island-half-volunteers": {
       "Volunteer Leaders and Leaders in Training (NO +1)": "Available",
       "Bag Check": "All Spots Filled",
-      "Fluid Station": "All Spots Filled",
+      "Fluid Station": "Near Capacity",
       "Green Team": "All Spots Filled",
       "Medals Distribution": "All Spots Filled",
       "Medical Volunteers (Must be licensed in NYS)": "Medical Available",
@@ -101,5 +100,5 @@
     }
   },
   "last_summary_date": "2026-08-11",
-  "last_run_at": "2026-08-12 11:00:42 AM EDT"
+  "last_run_at": "2026-08-12 11:30:32 AM EDT"
 }
