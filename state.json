@@ -13,12 +13,12 @@
     "https://events.nyrr.org/nyrr-summer-speed-series-2-volunteers": {},
     "https://events.nyrr.org/tcs-new-york-city-marathon-training-series-12m-volunteers": {
       "Bag Check": "Unknown status (color #808080)",
-      "Course Marshal North": "All Spots Filled",
-      "Course Marshal South": "All Spots Filled",
+      "Course Marshal North": "Unknown status (color #808080)",
+      "Course Marshal South": "Unknown status (color #808080)",
       "Fluid Station North": "Unknown status (color #808080)",
       "Fluid Station South": "Unknown status (color #808080)",
       "NYRR Ambassador": "Unknown status (color #808080)",
-      "Post-Race Amenities": "All Spots Filled",
+      "Post-Race Amenities": "Unknown status (color #808080)",
       "Start and Finish": "Unknown status (color #808080)"
     },
     "https://events.nyrr.org/nyrr-summer-speed-series-3-volunteers": {
@@ -100,5 +100,5 @@
     }
   },
   "last_summary_date": "2026-08-14",
-  "last_run_at": "2026-08-15 05:30:38 AM EDT"
+  "last_run_at": "2026-08-15 06:00:40 AM EDT"
 }
