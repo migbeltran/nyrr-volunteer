@@ -82,7 +82,7 @@
       "Medical Volunteers (Must be licensed in NYS)": "Medical Available",
       "NYRR Ambassador": "All Spots Filled",
       "Post-Race Amenities": "All Spots Filled",
-      "Start and Finish": "Near Capacity"
+      "Start and Finish": "All Spots Filled"
     },
     "https://events.nyrr.org/nyrr-ted-corbitt-15k-volunteers": {
       "Volunteer Leaders and Leaders in Training (NO +1)": "Available",
@@ -98,5 +98,5 @@
     }
   },
   "last_summary_date": "2026-08-14",
-  "last_run_at": "2026-08-15 09:00:40 AM EDT"
+  "last_run_at": "2026-08-15 09:30:28 AM EDT"
 }
