@@ -80,7 +80,7 @@
       "Green Team": "All Spots Filled",
       "Medals Distribution": "All Spots Filled",
       "Medical Volunteers (Must be licensed in NYS)": "Medical Available",
-      "NYRR Ambassador": "All Spots Filled",
+      "NYRR Ambassador": "Near Capacity",
       "Post-Race Amenities": "All Spots Filled",
       "Start and Finish": "All Spots Filled"
     },
@@ -98,5 +98,5 @@
     }
   },
   "last_summary_date": "2026-08-14",
-  "last_run_at": "2026-08-15 06:30:40 PM EDT"
+  "last_run_at": "2026-08-15 07:00:41 PM EDT"
 }
