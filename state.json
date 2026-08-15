@@ -21,9 +21,7 @@
       "Post-Race Amenities": "Unknown status (color #808080)",
       "Start and Finish": "Unknown status (color #808080)"
     },
-    "https://events.nyrr.org/nyrr-summer-speed-series-3-volunteers": {
-      "Track and Field Marshal": "All Spots Filled"
-    },
+    "https://events.nyrr.org/nyrr-summer-speed-series-3-volunteers": {},
     "https://events.nyrr.org/nyrr-start-line-series-bronx-volunteers": {
       "Bag Check": "All Spots Filled",
       "Course Marshal": "All Spots Filled",
@@ -100,5 +98,5 @@
     }
   },
   "last_summary_date": "2026-08-14",
-  "last_run_at": "2026-08-15 07:00:37 AM EDT"
+  "last_run_at": "2026-08-15 07:30:35 AM EDT"
 }
