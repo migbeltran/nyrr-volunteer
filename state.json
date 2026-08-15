@@ -15,11 +15,11 @@
       "Bag Check": "Unknown status (color #808080)",
       "Course Marshal North": "All Spots Filled",
       "Course Marshal South": "All Spots Filled",
-      "Fluid Station North": "All Spots Filled",
-      "Fluid Station South": "All Spots Filled",
+      "Fluid Station North": "Unknown status (color #808080)",
+      "Fluid Station South": "Unknown status (color #808080)",
       "NYRR Ambassador": "Unknown status (color #808080)",
       "Post-Race Amenities": "All Spots Filled",
-      "Start and Finish": "All Spots Filled"
+      "Start and Finish": "Unknown status (color #808080)"
     },
     "https://events.nyrr.org/nyrr-summer-speed-series-3-volunteers": {
       "Track and Field Marshal": "All Spots Filled"
@@ -100,5 +100,5 @@
     }
   },
   "last_summary_date": "2026-08-14",
-  "last_run_at": "2026-08-15 05:00:46 AM EDT"
+  "last_run_at": "2026-08-15 05:30:38 AM EDT"
 }
