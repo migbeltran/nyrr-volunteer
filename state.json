@@ -56,7 +56,7 @@
       "Medical Volunteers (Must be licensed in NYS)": "Medical Available",
       "NYRR Ambassador": "All Spots Filled",
       "Post-Race Amenities": "All Spots Filled",
-      "Start and Finish": "All Spots Filled"
+      "Start and Finish": "Near Capacity"
     },
     "https://events.nyrr.org/vcp-cross-country-1-volunteers": {
       "Cross Country Assistant": "All Spots Filled"
@@ -98,5 +98,5 @@
     }
   },
   "last_summary_date": "2026-08-14",
-  "last_run_at": "2026-08-15 02:00:45 PM EDT"
+  "last_run_at": "2026-08-15 02:30:35 PM EDT"
 }
