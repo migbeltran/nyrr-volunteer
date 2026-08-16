@@ -22,9 +22,6 @@ from bs4 import BeautifulSoup
 # --- Configuration ---------------------------------------------------
 
 URLS = [
-    "https://events.nyrr.org/percy-sutton-harlem-5k-volunteers",
-    "https://events.nyrr.org/nyrr-summer-speed-series-2-volunteers",
-    "https://events.nyrr.org/tcs-new-york-city-marathon-training-series-12m-volunteers",
     "https://events.nyrr.org/nyrr-summer-speed-series-3-volunteers",
     "https://events.nyrr.org/nyrr-start-line-series-bronx-volunteers",
     "https://events.nyrr.org/nyrr-summer-speed-series-4-volunteers",
