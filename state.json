@@ -42,7 +42,7 @@
       "Finish Area Bag Check": "All Spots Filled",
       "Finish Area NYRR Ambassador": "All Spots Filled",
       "Post-Race Amenities": "All Spots Filled",
-      "Start Area Bag Check": "Near Capacity",
+      "Start Area Bag Check": "All Spots Filled",
       "Start Area NYRR Ambassador": "All Spots Filled",
       "Start Corral Marshal": "All Spots Filled"
     },
@@ -80,7 +80,7 @@
       "Green Team": "All Spots Filled",
       "Medals Distribution": "All Spots Filled",
       "Medical Volunteers (Must be licensed in NYS)": "Medical Available",
-      "NYRR Ambassador": "Near Capacity",
+      "NYRR Ambassador": "All Spots Filled",
       "Post-Race Amenities": "All Spots Filled",
       "Start and Finish": "All Spots Filled"
     },
@@ -97,6 +97,6 @@
       "Start and Finish": "All Spots Filled"
     }
   },
-  "last_summary_date": "2026-08-14",
-  "last_run_at": "2026-08-15 07:30:40 PM EDT"
+  "last_summary_date": "2026-08-15",
+  "last_run_at": "2026-08-15 08:00:33 PM EDT"
 }
