@@ -32,7 +32,6 @@
       "Course Marshal South": "All Spots Filled",
       "Fluid Station North": "All Spots Filled",
       "Fluid Station South": "All Spots Filled",
-      "Medical Volunteers (Must be licensed in NYS)": "Medical Available",
       "NYRR Ambassador": "All Spots Filled",
       "Post-Race Amenities": "All Spots Filled",
       "Start and Finish": "All Spots Filled"
@@ -77,5 +76,5 @@
     }
   },
   "last_summary_date": "2026-08-16",
-  "last_run_at": "2026-08-17 11:30:25 AM EDT"
+  "last_run_at": "2026-08-17 12:00:27 PM EDT"
 }
