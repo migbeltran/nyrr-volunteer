@@ -2,7 +2,7 @@
   "slots": {
     "https://events.nyrr.org/nyrr-summer-speed-series-3-volunteers": {},
     "https://events.nyrr.org/nyrr-start-line-series-bronx-volunteers": {
-      "Bag Check": "Near Capacity",
+      "Bag Check": "All Spots Filled",
       "Course Marshal": "All Spots Filled",
       "Fluid Station": "All Spots Filled",
       "NYRR Ambassador": "All Spots Filled",
@@ -77,5 +77,5 @@
     }
   },
   "last_summary_date": "2026-08-16",
-  "last_run_at": "2026-08-17 08:30:22 AM EDT"
+  "last_run_at": "2026-08-17 09:00:27 AM EDT"
 }
