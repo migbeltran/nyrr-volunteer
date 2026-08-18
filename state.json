@@ -21,7 +21,7 @@
       "Finish Area Bag Check": "All Spots Filled",
       "Finish Area NYRR Ambassador": "All Spots Filled",
       "Post-Race Amenities": "All Spots Filled",
-      "Start Area Bag Check": "Near Capacity",
+      "Start Area Bag Check": "All Spots Filled",
       "Start Area NYRR Ambassador": "All Spots Filled",
       "Start Corral Marshal": "All Spots Filled"
     },
@@ -75,5 +75,5 @@
     }
   },
   "last_summary_date": "2026-08-17",
-  "last_run_at": "2026-08-18 11:00:40 AM EDT"
+  "last_run_at": "2026-08-18 11:30:30 AM EDT"
 }
