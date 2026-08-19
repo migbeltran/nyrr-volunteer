@@ -19,11 +19,11 @@
       "Volunteer Leaders and Leaders in Training (NO +1)": "Available",
       "Course Marshal": "All Spots Filled",
       "Finish Area Bag Check": "All Spots Filled",
-      "Finish Area Jump Team": "Near Capacity",
+      "Finish Area Jump Team": "All Spots Filled",
       "Finish Area NYRR Ambassador": "All Spots Filled",
       "Post-Race Amenities": "All Spots Filled",
       "Start Area Bag Check": "All Spots Filled",
-      "Start Area Jump Team": "Near Capacity",
+      "Start Area Jump Team": "All Spots Filled",
       "Start Area NYRR Ambassador": "All Spots Filled",
       "Start Corral Marshal": "All Spots Filled",
       "Youth Event Assistant": "All Spots Filled"
@@ -78,5 +78,5 @@
     }
   },
   "last_summary_date": "2026-08-18",
-  "last_run_at": "2026-08-19 05:30:27 PM EDT"
+  "last_run_at": "2026-08-19 06:00:32 PM EDT"
 }
