@@ -36,7 +36,7 @@
       "Fluid Station North": "All Spots Filled",
       "Fluid Station South": "All Spots Filled",
       "NYRR Ambassador": "All Spots Filled",
-      "Post-Race Amenities": "All Spots Filled",
+      "Post-Race Amenities": "Near Capacity",
       "Start and Finish": "All Spots Filled"
     },
     "https://events.nyrr.org/vcp-cross-country-1-volunteers": {
@@ -78,5 +78,5 @@
     }
   },
   "last_summary_date": "2026-08-19",
-  "last_run_at": "2026-08-20 09:30:26 AM EDT"
+  "last_run_at": "2026-08-20 10:00:30 AM EDT"
 }
