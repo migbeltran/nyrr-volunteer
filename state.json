@@ -34,7 +34,7 @@
       "Course Marshal North": "All Spots Filled",
       "Course Marshal South": "All Spots Filled",
       "Fluid Station North": "All Spots Filled",
-      "Fluid Station South": "Near Capacity",
+      "Fluid Station South": "All Spots Filled",
       "NYRR Ambassador": "All Spots Filled",
       "Post-Race Amenities": "All Spots Filled",
       "Start and Finish": "All Spots Filled"
@@ -58,7 +58,7 @@
       "Bag Check": "All Spots Filled",
       "Fluid Station": "All Spots Filled",
       "Green Team": "All Spots Filled",
-      "Medals Distribution": "Near Capacity",
+      "Medals Distribution": "All Spots Filled",
       "Medical Volunteers (Must be licensed in NYS)": "Medical Available",
       "NYRR Ambassador": "All Spots Filled",
       "Post-Race Amenities": "All Spots Filled",
@@ -78,5 +78,5 @@
     }
   },
   "last_summary_date": "2026-08-22",
-  "last_run_at": "2026-08-23 12:30:30 PM EDT"
+  "last_run_at": "2026-08-23 01:00:38 PM EDT"
 }
