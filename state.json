@@ -20,7 +20,7 @@
       "Course Marshal": "All Spots Filled",
       "Finish Area Bag Check": "All Spots Filled",
       "Finish Area Jump Team": "All Spots Filled",
-      "Finish Area NYRR Ambassador": "All Spots Filled",
+      "Finish Area NYRR Ambassador": "Near Capacity",
       "Post-Race Amenities": "All Spots Filled",
       "Start Area Bag Check": "All Spots Filled",
       "Start Area Jump Team": "All Spots Filled",
@@ -78,5 +78,5 @@
     }
   },
   "last_summary_date": "2026-08-23",
-  "last_run_at": "2026-08-24 03:00:41 PM EDT"
+  "last_run_at": "2026-08-24 03:30:36 PM EDT"
 }
