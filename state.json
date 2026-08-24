@@ -16,11 +16,11 @@
       "Track and Field Marshal": "All Spots Filled"
     },
     "https://events.nyrr.org/new-balance-5th-avenue-mile-volunteers": {
-      "Volunteer Leaders and Leaders in Training (NO +1)": "Available",
+      "Volunteer Leaders and Leaders in Training (NO +1)": "Near Capacity",
       "Course Marshal": "All Spots Filled",
       "Finish Area Bag Check": "All Spots Filled",
       "Finish Area Jump Team": "All Spots Filled",
-      "Finish Area NYRR Ambassador": "Near Capacity",
+      "Finish Area NYRR Ambassador": "All Spots Filled",
       "Post-Race Amenities": "All Spots Filled",
       "Start Area Bag Check": "All Spots Filled",
       "Start Area Jump Team": "All Spots Filled",
@@ -29,7 +29,7 @@
       "Youth Event Assistant": "All Spots Filled"
     },
     "https://events.nyrr.org/tcs-new-york-city-training-series-18m-volunteers": {
-      "Volunteer Leaders and Leaders in Training": "All Spots Filled",
+      "Volunteer Leaders and Leaders in Training": "Near Capacity",
       "Bag Check": "All Spots Filled",
       "Course Marshal North": "All Spots Filled",
       "Course Marshal South": "All Spots Filled",
@@ -78,5 +78,5 @@
     }
   },
   "last_summary_date": "2026-08-23",
-  "last_run_at": "2026-08-24 03:30:36 PM EDT"
+  "last_run_at": "2026-08-24 04:00:30 PM EDT"
 }
