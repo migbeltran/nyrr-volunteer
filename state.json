@@ -1,17 +1,5 @@
 {
   "slots": {
-    "https://events.nyrr.org/nyrr-summer-speed-series-3-volunteers": {},
-    "https://events.nyrr.org/nyrr-start-line-series-bronx-volunteers": {
-      "Bag Check": "All Spots Filled",
-      "Course Marshal": "All Spots Filled",
-      "Fluid Station": "All Spots Filled",
-      "NYRR Ambassador": "All Spots Filled",
-      "Post-Race Amenities": "All Spots Filled",
-      "Start and Finish": "All Spots Filled"
-    },
-    "https://events.nyrr.org/nyrr-summer-speed-series-4-volunteers": {
-      "Track and Field Marshal": "All Spots Filled"
-    },
     "https://events.nyrr.org/nyrr-summer-speed-series-5-volunteers": {
       "Track and Field Marshal": "All Spots Filled"
     },
@@ -78,5 +66,5 @@
     }
   },
   "last_summary_date": "2026-08-26",
-  "last_run_at": "2026-08-26 08:00:46 PM EDT"
+  "last_run_at": "2026-08-26 08:30:24 PM EDT"
 }
