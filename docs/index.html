@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NYRR Volunteer Watch — Bib Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0B1E3D;
+    --navy-deep:#071528;
+    --orange:#FF6A2B;
+    --orange-soft:#FFD9C4;
+    --cream:#F6F3EC;
+    --paper:#FFFFFF;
+    --ink:#14213D;
+    --ink-soft:#5B6B85;
+    --line: rgba(11,30,61,0.12);
+
+    --status-available:#15803D;
+    --status-available-bg:#E7F4EC;
+    --status-nearcap:#B8860B;
+    --status-nearcap-bg:#FBF1DA;
+    --status-medical:#1E6FBF;
+    --status-medical-bg:#E7F1FB;
+    --status-filled:#B23A2E;
+    --status-filled-bg:#F5E9E7;
+    --status-unknown:#6B7280;
+    --status-unknown-bg:#EEEFF1;
+
+    --font-display:'Oswald', sans-serif;
+    --font-body:'Inter', sans-serif;
+    --font-mono:'IBM Plex Mono', monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:var(--font-body);
+    min-height:100vh;
+  }
+
+  /* ---------- Header ---------- */
+  header.masthead{
+    background:linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
+    color:var(--cream);
+    padding:0;
+    position:relative;
+    overflow:hidden;
+  }
+  header.masthead::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:0;
+    height:4px;
+    background:repeating-linear-gradient(90deg, var(--orange) 0 24px, transparent 24px 40px);
+  }
+  .masthead-inner{
+    max-width:1100px;
+    margin:0 auto;
+    padding:28px 24px 22px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    flex-wrap:wrap;
+    gap:16px;
+  }
+  .brand-eyebrow{
+    font-family:var(--font-mono);
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--orange-soft);
+    margin:0 0 6px;
+  }
+  .brand-title{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:clamp(28px, 4vw, 40px);
+    letter-spacing:0.01em;
+    margin:0;
+    text-transform:uppercase;
+  }
+  .live-pill{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-family:var(--font-mono);
+    font-size:13px;
+    color:var(--cream);
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.16);
+    padding:7px 12px 7px 10px;
+    border-radius:999px;
+  }
+  .live-dot{
+    width:8px; height:8px; border-radius:50%;
+    background:#3ED27A;
+    box-shadow:0 0 0 0 rgba(62,210,122,0.6);
+    animation:pulse 2.2s infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(62,210,122,0.55);}
+    70%{box-shadow:0 0 0 8px rgba(62,210,122,0);}
+    100%{box-shadow:0 0 0 0 rgba(62,210,122,0);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .live-dot{animation:none;}
+  }
+
+  /* ---------- Stat strip ---------- */
+  .stat-strip{
+    max-width:1100px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+    transform:translateY(24px);
+    box-shadow:0 8px 24px rgba(11,30,61,0.08);
+  }
+  .stat-cell{
+    background:var(--paper);
+    padding:18px 20px;
+    text-align:left;
+  }
+  .stat-num{
+    font-family:var(--font-display);
+    font-size:34px;
+    font-weight:700;
+    line-height:1;
+    color:var(--navy);
+  }
+  .stat-num.accent{color:var(--orange);}
+  .stat-label{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-top:6px;
+  }
+
+  /* ---------- Main / bib grid ---------- */
+  main{
+    max-width:1100px;
+    margin:0 auto;
+    padding:56px 24px 40px;
+  }
+  .section-heading{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:18px;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .section-heading h2{
+    font-family:var(--font-display);
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    font-size:18px;
+    color:var(--navy);
+    margin:0;
+  }
+  .refresh-btn{
+    font-family:var(--font-mono);
+    font-size:12px;
+    color:var(--navy);
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:8px 14px;
+    cursor:pointer;
+  }
+  .refresh-btn:hover{border-color:var(--orange);}
+  .refresh-btn:focus-visible, a:focus-visible, button:focus-visible{
+    outline:2px solid var(--orange);
+    outline-offset:2px;
+  }
+
+  .bib-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(300px, 1fr));
+    gap:20px;
+  }
+
+  .bib-card{
+    position:relative;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:22px 20px 18px;
+    border-top:3px dashed rgba(11,30,61,0.25);
+    transition:transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .bib-card:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 22px rgba(11,30,61,0.10);
+  }
+  .bib-card::before, .bib-card::after{
+    content:"";
+    position:absolute;
+    top:-7px;
+    width:12px; height:12px;
+    border-radius:50%;
+    background:var(--cream);
+    border:2px solid rgba(11,30,61,0.25);
+  }
+  .bib-card::before{left:14px;}
+  .bib-card::after{right:14px;}
+
+  .bib-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom:10px;
+  }
+  .bib-number{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:30px;
+    color:var(--navy);
+    line-height:1;
+  }
+  .bib-number span{
+    font-size:12px;
+    display:block;
+    font-family:var(--font-mono);
+    color:var(--ink-soft);
+    font-weight:400;
+    letter-spacing:0.08em;
+    margin-bottom:2px;
+  }
+  .event-status-flag{
+    font-family:var(--font-mono);
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    padding:4px 9px;
+    border-radius:999px;
+    white-space:nowrap;
+  }
+  .flag-open{background:var(--status-available-bg); color:var(--status-available);}
+  .flag-full{background:var(--status-unknown-bg); color:var(--ink-soft);}
+
+  .event-name{
+    font-family:var(--font-body);
+    font-weight:600;
+    font-size:16px;
+    color:var(--ink);
+    margin:0 0 14px;
+    line-height:1.3;
+  }
+
+  .tape-track{
+    height:8px;
+    border-radius:999px;
+    background:var(--status-available-bg);
+    overflow:hidden;
+    margin-bottom:6px;
+    border:1px solid var(--line);
+  }
+  .tape-fill{
+    height:100%;
+    background:repeating-linear-gradient(90deg, var(--navy) 0 6px, var(--navy-deep) 6px 12px);
+    border-radius:999px 0 0 999px;
+  }
+  .tape-label{
+    font-family:var(--font-mono);
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-bottom:16px;
+  }
+
+  .slot-list{
+    list-style:none;
+    margin:0; padding:0;
+    display:flex; flex-direction:column; gap:8px;
+  }
+  .slot-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    font-size:13.5px;
+  }
+  .slot-name{
+    color:var(--ink);
+    flex:1;
+    min-width:0;
+  }
+  .slot-name .muted-tag{
+    font-family:var(--font-mono);
+    font-size:10px;
+    color:var(--ink-soft);
+    margin-left:6px;
+  }
+  .slot-badge{
+    font-family:var(--font-mono);
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    padding:3px 9px;
+    border-radius:999px;
+    white-space:nowrap;
+    flex-shrink:0;
+  }
+  .badge-available{background:var(--status-available-bg); color:var(--status-available);}
+  .badge-nearcap{background:var(--status-nearcap-bg); color:var(--status-nearcap);}
+  .badge-medical{background:var(--status-medical-bg); color:var(--status-medical);}
+  .badge-filled{background:var(--status-filled-bg); color:var(--status-filled);}
+  .badge-unknown{background:var(--status-unknown-bg); color:var(--status-unknown); border:1px dashed var(--status-unknown);}
+
+  .muted-row .slot-name, .muted-row .slot-badge{opacity:0.55;}
+
+  footer{
+    max-width:1100px;
+    margin:0 auto;
+    padding:10px 24px 48px;
+    font-family:var(--font-mono);
+    font-size:12px;
+    color:var(--ink-soft);
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  footer a{color:var(--navy);}
+
+  .empty-state{
+    font-family:var(--font-mono);
+    font-size:13px;
+    color:var(--ink-soft);
+    padding:40px 0;
+  }
+
+  @media (max-width:640px){
+    .stat-strip{grid-template-columns:1fr;}
+    main{padding-top:48px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div>
+      <p class="brand-eyebrow">NYRR Volunteer Watch</p>
+      <h1 class="brand-title">Bib Board</h1>
+    </div>
+    <div class="live-pill"><span class="live-dot"></span><span id="checked-at">Loading…</span></div>
+  </div>
+</header>
+
+<div class="stat-strip" id="stat-strip">
+  <div class="stat-cell">
+    <div class="stat-num" id="stat-total">—</div>
+    <div class="stat-label">Events Tracked</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-num accent" id="stat-open">—</div>
+    <div class="stat-label">Events With Openings</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-num" id="stat-slots">—</div>
+    <div class="stat-label">Roles Monitored</div>
+  </div>
+</div>
+
+<main>
+  <div class="section-heading">
+    <h2>Race Field</h2>
+    <button class="refresh-btn" id="refresh-btn">↻ Refresh</button>
+  </div>
+  <div class="bib-grid" id="bib-grid">
+    <div class="empty-state">Loading slot data…</div>
+  </div>
+</main>
+
+<footer>
+  <span>Auto-checked roughly every 30 min via GitHub Actions</span>
+  <a href="https://github.com/" id="repo-link">View source</a>
+</footer>
+
+<script>
+  // Mirrors check_slots.py's own color→status map, name exclusions, and
+  // hidden-status categories, so this dashboard reads the exact same
+  // rules the notifier uses rather than re-deriving its own opinion of
+  // what counts as "open."
+  const STATUS_STYLE = {
+    "Available":            { badge: "badge-available" },
+    "Near Capacity":        { badge: "badge-nearcap" },
+    "Medical Available":    { badge: "badge-medical" },
+    "All Spots Filled":     { badge: "badge-filled" },
+  };
+  const EXCLUDED_NAME_SUBSTRINGS = ["leaders", "(no +1)"];
+  const HIDDEN_STATUS_CATEGORIES = new Set(["Medical Available"]);
+
+  const EVENT_NAMES = {
+    "https://events.nyrr.org/nyrr-summer-speed-series-5-volunteers": "NYRR Summer Speed Series #5",
+    "https://events.nyrr.org/new-balance-5th-avenue-mile-volunteers": "New Balance 5th Avenue Mile",
+    "https://events.nyrr.org/tcs-new-york-city-training-series-18m-volunteers": "TCS NYC Training Series — 18M",
+    "https://events.nyrr.org/vcp-cross-country-1-volunteers": "VCP Cross Country #1",
+    "https://events.nyrr.org/vcp-cross-country-2-volunteers": "VCP Cross Country #2",
+    "https://events.nyrr.org/nyrr-jersey-city-5k-volunteers": "NYRR Jersey City 5K",
+    "https://events.nyrr.org/nyrr-staten-island-half-volunteers": "NYRR Staten Island Half",
+    "https://events.nyrr.org/nyrr-ted-corbitt-15k-volunteers": "NYRR Ted Corbitt 15K",
+  };
+  const ACRONYMS = new Set(["nyrr","tcs","vcp","nyc","5k","15k","18m"]);
+
+  function friendlyName(url){
+    if (EVENT_NAMES[url]) return EVENT_NAMES[url];
+    try {
+      const slug = new URL(url).pathname.replace(/^\/|\/$/g, "").replace(/-volunteers$/, "");
+      return slug.split("-").map(w => ACRONYMS.has(w.toLowerCase()) ? w.toUpperCase() : w[0].toUpperCase()+w.slice(1)).join(" ");
+    } catch(e){ return url; }
+  }
+
+  function isExcludedSlot(name){
+    const lower = name.toLowerCase();
+    return EXCLUDED_NAME_SUBSTRINGS.some(sub => lower.includes(sub));
+  }
+  function isNotifiable(name, status){
+    if (isExcludedSlot(name)) return false;
+    if (HIDDEN_STATUS_CATEGORIES.has(status)) return false;
+    return true;
+  }
+  function badgeClassFor(status){
+    return (STATUS_STYLE[status] || { badge: "badge-unknown" }).badge;
+  }
+
+  function formatCheckedAt(raw){
+    // "2026-08-27 07:00:25 PM EDT" -> "Aug 27, 2026 · 7:00 PM EDT"
+    const m = raw && raw.match(/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2}) (AM|PM) (\w+)$/);
+    if (!m) return raw || "unknown";
+    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    const [, y, mo, d, h, min, , ampm, tz] = m;
+    return `${months[parseInt(mo,10)-1]} ${parseInt(d,10)}, ${y} · ${parseInt(h,10)}:${min} ${ampm} ${tz}`;
+  }
+
+  function renderCard(url, slots, index){
+    const entries = Object.entries(slots);
+    const filledCount = entries.filter(([,status]) => status === "All Spots Filled").length;
+    const pctFilled = entries.length ? Math.round((filledCount / entries.length) * 100) : 0;
+    const hasOpening = entries.some(([name, status]) => isNotifiable(name, status) && status !== "All Spots Filled");
+
+    const rows = entries.map(([name, status]) => {
+      const suppressed = !isNotifiable(name, status);
+      const badgeClass = badgeClassFor(status);
+      const label = STATUS_STYLE[status] ? status : `Unknown (${status})`;
+      return `
+        <li class="slot-row${suppressed ? " muted-row" : ""}">
+          <span class="slot-name">${escapeHtml(name)}${suppressed ? '<span class="muted-tag">not alerted</span>' : ""}</span>
+          <span class="slot-badge ${badgeClass}">${escapeHtml(label)}</span>
+        </li>`;
+    }).join("");
+
+    return `
+      <div class="bib-card">
+        <div class="bib-top">
+          <div class="bib-number"><span>Bib</span>${String(index+1).padStart(3,"0")}</div>
+          <span class="event-status-flag ${hasOpening ? "flag-open" : "flag-full"}">${hasOpening ? "Opening" : "Full"}</span>
+        </div>
+        <h3 class="event-name">${escapeHtml(friendlyName(url))}</h3>
+        <div class="tape-track"><div class="tape-fill" style="width:${pctFilled}%"></div></div>
+        <div class="tape-label">${pctFilled}% filled · ${entries.length} role${entries.length === 1 ? "" : "s"} tracked</div>
+        <ul class="slot-list">${rows}</ul>
+      </div>`;
+  }
+
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  }
+
+  async function loadDashboard(){
+    const grid = document.getElementById("bib-grid");
+    try {
+      const res = await fetch("./state.json?_=" + Date.now(), { cache: "no-store" });
+      if (!res.ok) throw new Error("state.json not found (" + res.status + ")");
+      const state = await res.json();
+      const slotsByUrl = state.slots || {};
+      const urls = Object.keys(slotsByUrl);
+
+      let totalSlots = 0;
+      let eventsWithOpenings = 0;
+      urls.forEach(url => {
+        const entries = Object.entries(slotsByUrl[url]);
+        totalSlots += entries.length;
+        if (entries.some(([name, status]) => isNotifiable(name, status) && status !== "All Spots Filled")) {
+          eventsWithOpenings++;
+        }
+      });
+
+      document.getElementById("stat-total").textContent = urls.length;
+      document.getElementById("stat-open").textContent = eventsWithOpenings;
+      document.getElementById("stat-slots").textContent = totalSlots;
+      document.getElementById("checked-at").textContent = "Checked " + formatCheckedAt(state.last_run_at);
+
+      grid.innerHTML = urls.length
+        ? urls.map((url, i) => renderCard(url, slotsByUrl[url], i)).join("")
+        : '<div class="empty-state">No events currently tracked.</div>';
+    } catch (err) {
+      grid.innerHTML = `<div class="empty-state">Couldn't load slot data (${escapeHtml(err.message)}). If you're viewing this file locally, run a local server — browsers block file:// fetches — e.g. <code>python3 -m http.server</code> from the docs/ folder.</div>`;
+      document.getElementById("checked-at").textContent = "Data unavailable";
+    }
+  }
+
+  document.getElementById("refresh-btn").addEventListener("click", loadDashboard);
+  loadDashboard();
+</script>
+
+</body>
+</html>
