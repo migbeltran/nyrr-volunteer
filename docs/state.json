@@ -20,7 +20,7 @@
       "Volunteer Leaders and Leaders in Training": "Near Capacity",
       "Bag Check": "All Spots Filled",
       "Course Marshal North": "All Spots Filled",
-      "Course Marshal South": "All Spots Filled",
+      "Course Marshal South": "Near Capacity",
       "Fluid Station North": "All Spots Filled",
       "Fluid Station South": "All Spots Filled",
       "NYRR Ambassador": "All Spots Filled",
@@ -66,5 +66,5 @@
     }
   },
   "last_summary_date": "2026-08-28",
-  "last_run_at": "2026-08-29 06:00:28 AM EDT"
+  "last_run_at": "2026-08-29 06:30:21 AM EDT"
 }
