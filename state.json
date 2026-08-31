@@ -37,6 +37,7 @@
       "Volunteer Leaders and Leaders in Training (NO +1)": "Available",
       "Bag Check": "All Spots Filled",
       "Fluid Station": "All Spots Filled",
+      "Medical Volunteers (Must be licensed in NJS or NYS EMT)": "Medical Available",
       "Post-Race Amenities": "All Spots Filled",
       "Start and Finish": "All Spots Filled",
       "Transportation Marshal": "All Spots Filled"
@@ -66,5 +67,5 @@
     }
   },
   "last_summary_date": "2026-08-30",
-  "last_run_at": "2026-08-31 07:00:29 PM EDT"
+  "last_run_at": "2026-08-31 07:30:23 PM EDT"
 }
