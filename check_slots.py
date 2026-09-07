@@ -22,14 +22,18 @@ from bs4 import BeautifulSoup
 # --- Configuration ---------------------------------------------------
 
 URLS = [
-    "https://events.nyrr.org/nyrr-summer-speed-series-5-volunteers",
     "https://events.nyrr.org/new-balance-5th-avenue-mile-volunteers",
     "https://events.nyrr.org/tcs-new-york-city-training-series-18m-volunteers",
     "https://events.nyrr.org/vcp-cross-country-1-volunteers",
     "https://events.nyrr.org/vcp-cross-country-2-volunteers",
     "https://events.nyrr.org/nyrr-jersey-city-5k-volunteers",
     "https://events.nyrr.org/nyrr-staten-island-half-volunteers",
+    "https://events.nyrr.org/rising-nyrr-fall-jamboree-volunteers",
+    "https://events.nyrr.org/abbott-dash-to-the-finish-line-5k-volunteers",
+    "https://events.nyrr.org/vcp-cross-country-3-volunteers",
     "https://events.nyrr.org/nyrr-ted-corbitt-15k-volunteers",
+    "https://events.nyrr.org/nyrr-frosty-5k-volunteers",
+    "https://events.nyrr.org/nyrr-midnight-run-volunteers",
     # add more event URLs here as needed
 ]
 
@@ -346,7 +350,7 @@ def main():
         summary_body = "\n".join(summary_lines) if summary_lines else "No data collected."
         send_notification(
             "Volunteer slots - status check",
-            summary_body + f"\n\nChecked: {checked_at}\n\nMy girlfriend is amazing!",
+            summary_body + f"\n\nChecked: {checked_at}",
             priority="default",
         )
         # Only actually mark today "done" for real (non-forced) sends, so
