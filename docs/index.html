@@ -117,7 +117,7 @@
     max-width:1100px;
     margin:0 auto;
     display:grid;
-    grid-template-columns:repeat(3, 1fr);
+    grid-template-columns:repeat(2, 1fr);
     gap:1px;
     background:var(--line);
     border:1px solid var(--line);
@@ -315,7 +315,6 @@
   .flag-open{background:var(--status-available-bg); color:var(--status-available);}
   .flag-full{background:var(--status-unknown-bg); color:var(--ink-soft);}
   .flag-ninefilled{background:var(--status-nearcap-bg); color:var(--status-nearcap);}
-  .flag-unalerted{background:var(--status-medical-bg); color:var(--status-medical);}
 
   .event-name{
     font-family:var(--font-body);
@@ -442,10 +441,6 @@
     <div class="stat-label">Events Tracked</div>
   </div>
   <div class="stat-cell">
-    <div class="stat-num accent" id="stat-open">—</div>
-    <div class="stat-label">Events With Openings</div>
-  </div>
-  <div class="stat-cell">
     <div class="stat-num" id="stat-slots">—</div>
     <div class="stat-label">Roles Monitored</div>
   </div>
@@ -554,31 +549,23 @@
   }
 
   // The headline flag, in priority order:
-  //   "Available"              - a 9+1 slot is open (the one worth acting on)
-  //   "All 9+1 Slots Filled"   - every 9+1 slot is gone, but something else is open
-  //   "Available (not alerted)" - the only things open are ones the notifier
-  //                              suppresses: Leaders slots, Medical, etc. Still
-  //                              a real opening, just not one you get pinged for.
-  //   "Filled"                 - nothing open at all
-  // An event with no 9+1 slots at all falls back to plain Available/Filled.
+  //   "Available"            - a 9+1 slot is open AND alerted on: the only
+  //                            case worth dropping everything for
+  //   "All 9+1 Slots Filled" - something is still open, but not a 9+1 slot you
+  //                            get pinged for. Covers suppressed openings too
+  //                            (Leaders slots, Medical), which are real but not
+  //                            what you're watching for.
+  //   "Filled"               - nothing open at all
   function eventFlag(slots, tags){
     const entries = Object.entries(slots);
     const isVacant = status => status !== "All Spots Filled";
-    const isOpen = (name, status) => isNotifiable(name, status) && isVacant(status);
     const isNinePlusOne = name => ((tags || {})[name] || []).includes("9+1");
 
-    if (entries.some(([n, st]) => isNinePlusOne(n) && isOpen(n, st))) {
+    if (entries.some(([n, st]) => isNinePlusOne(n) && isNotifiable(n, st) && isVacant(st))) {
       return { label: "Available", cls: "flag-open" };
     }
-    if (entries.some(([n, st]) => isOpen(n, st))) {
-      return entries.some(([n]) => isNinePlusOne(n))
-        ? { label: "All 9+1 Slots Filled", cls: "flag-ninefilled" }
-        : { label: "Available", cls: "flag-open" };
-    }
-    // Nothing the notifier would alert on - but a suppressed slot may still
-    // be open, and calling that "Filled" is simply wrong.
     if (entries.some(([, st]) => isVacant(st))) {
-      return { label: "Available (not alerted)", cls: "flag-unalerted" };
+      return { label: "All 9+1 Slots Filled", cls: "flag-ninefilled" };
     }
     return { label: "Filled", cls: "flag-full" };
   }
@@ -677,17 +664,9 @@
       });
 
       let totalSlots = 0;
-      let eventsWithOpenings = 0;
-      urls.forEach(url => {
-        const entries = Object.entries(slotsByUrl[url]);
-        totalSlots += entries.length;
-        if (entries.some(([name, status]) => isNotifiable(name, status) && status !== "All Spots Filled")) {
-          eventsWithOpenings++;
-        }
-      });
+      urls.forEach(url => { totalSlots += Object.keys(slotsByUrl[url]).length; });
 
       document.getElementById("stat-total").textContent = urls.length;
-      document.getElementById("stat-open").textContent = eventsWithOpenings;
       document.getElementById("stat-slots").textContent = totalSlots;
       document.getElementById("checked-at").textContent = "Checked " + formatCheckedAt(state.last_run_at);
 
