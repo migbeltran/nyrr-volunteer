@@ -328,6 +328,14 @@
     margin:0 0 14px;
     line-height:1.3;
   }
+  .event-name a{
+    color:inherit;
+    text-decoration:none;
+  }
+  .event-name a:hover{
+    color:var(--orange);
+    text-decoration:underline;
+  }
 
   .event-date{
     font-family:var(--font-mono);
@@ -400,20 +408,6 @@
 
   .muted-row .slot-name, .muted-row .slot-badge{opacity:0.55;}
 
-  footer{
-    max-width:1100px;
-    margin:0 auto;
-    padding:10px 24px 48px;
-    font-family:var(--font-mono);
-    font-size:12px;
-    color:var(--ink-soft);
-    display:flex;
-    justify-content:space-between;
-    flex-wrap:wrap;
-    gap:8px;
-  }
-  footer a{color:var(--navy);}
-
   .empty-state{
     font-family:var(--font-mono);
     font-size:13px;
@@ -466,10 +460,6 @@
     <div class="empty-state">Loading slot data…</div>
   </div>
 </main>
-
-<footer>
-  <span>Auto-checked every 30 mins</span>
-</footer>
 
 <script>
   // Mirrors check_slots.py's own color→status map, name exclusions, and
@@ -591,6 +581,12 @@
     return out;
   }
 
+  // Only ever linkify the event pages we actually track - never a URL that
+  // happened to turn up as a key in state.json.
+  function eventHref(url){
+    return /^https:\/\/events\.nyrr\.org\//.test(url) ? url : null;
+  }
+
   function renderOpenings(open){
     const body = document.getElementById("openings-body");
     document.getElementById("openings-count").textContent = open.length ? `(${open.length})` : "";
@@ -599,15 +595,14 @@
       return;
     }
     body.innerHTML = "<ul>" + open.map(o => {
-      // Only ever linkify the event pages we actually track.
-      const safe = /^https:\/\/events\.nyrr\.org\//.test(o.url);
+      const href = eventHref(o.url);
       const label = `<span class="ev">${escapeHtml(o.event)}</span>`
                   + `<span class="sep">—</span>`
                   + `<span>${escapeHtml(o.slot)}</span>`;
       const tag = o.status === "Available" ? ""
                 : `<span class="st">${escapeHtml(o.status)}</span>`;
       return "<li>"
-        + (safe ? `<a href="${escapeHtml(o.url)}" target="_blank" rel="noopener noreferrer">${label}</a>` : label)
+        + (href ? `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${label}</a>` : label)
         + tag + "</li>";
     }).join("") + "</ul>";
   }
@@ -617,6 +612,11 @@
     const filledCount = entries.filter(([,status]) => status === "All Spots Filled").length;
     const pctFilled = entries.length ? Math.round((filledCount / entries.length) * 100) : 0;
     const flag = eventFlag(slots, tags);
+    const displayName = escapeHtml((meta && meta.name) || friendlyName(url));
+    const href = eventHref(url);
+    const linkedEventName = href
+      ? `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${displayName}</a>`
+      : displayName;
     const eventDate = formatEventDate(meta && meta.date);
     const stale = staleness(meta).stale;
 
@@ -637,7 +637,7 @@
           <div class="bib-number"><span>Bib</span>${String(index+1).padStart(3,"0")}</div>
           <span class="event-status-flag ${flag.cls}">${escapeHtml(flag.label)}</span>
         </div>
-        <h3 class="event-name">${escapeHtml((meta && meta.name) || friendlyName(url))}</h3>
+        <h3 class="event-name">${linkedEventName}</h3>
         <div class="event-date${eventDate ? "" : " undated"}">${escapeHtml(eventDate || "Date unavailable")}${stale && eventDate ? " · past" : ""}</div>
         <div class="tape-track"><div class="tape-fill" style="width:${pctFilled}%"></div></div>
         <div class="tape-label">${pctFilled}% filled · ${entries.length} role${entries.length === 1 ? "" : "s"} tracked</div>
