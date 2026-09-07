@@ -1,8 +1,5 @@
 {
   "slots": {
-    "https://events.nyrr.org/nyrr-summer-speed-series-5-volunteers": {
-      "Track and Field Marshal": "All Spots Filled"
-    },
     "https://events.nyrr.org/new-balance-5th-avenue-mile-volunteers": {
       "Volunteer Leaders and Leaders in Training (NO +1)": "Available",
       "Course Marshal": "All Spots Filled",
@@ -53,6 +50,23 @@
       "Post-Race Amenities": "All Spots Filled",
       "Start and Finish": "All Spots Filled"
     },
+    "https://events.nyrr.org/rising-nyrr-fall-jamboree-volunteers": {
+      "Youth Event Assistant": "All Spots Filled"
+    },
+    "https://events.nyrr.org/abbott-dash-to-the-finish-line-5k-volunteers": {
+      "Volunteer Leaders and Leaders in Training (NO +1)": "Available",
+      "Bag Check": "All Spots Filled",
+      "Course Marshal - Central Park and Midtown North": "All Spots Filled",
+      "Course Marshal - Midtown": "All Spots Filled",
+      "Fluid Station": "All Spots Filled",
+      "NYRR Ambassador": "All Spots Filled",
+      "Post-Race Amenities": "All Spots Filled",
+      "Start Corral Marshal": "All Spots Filled",
+      "Walk-Off Marshal": "All Spots Filled"
+    },
+    "https://events.nyrr.org/vcp-cross-country-3-volunteers": {
+      "Cross Country Assistant": "All Spots Filled"
+    },
     "https://events.nyrr.org/nyrr-ted-corbitt-15k-volunteers": {
       "Volunteer Leaders and Leaders in Training (NO +1)": "Available",
       "Bag Check": "All Spots Filled",
@@ -64,8 +78,29 @@
       "NYRR Ambassador": "All Spots Filled",
       "Post-Race Amenities": "All Spots Filled",
       "Start and Finish": "All Spots Filled"
+    },
+    "https://events.nyrr.org/nyrr-frosty-5k-volunteers": {
+      "Volunteer Leaders and Leaders in Training (NO +1)": "Available",
+      "Bag Check": "All Spots Filled",
+      "Course Marshal": "All Spots Filled",
+      "Fluid Station": "All Spots Filled",
+      "NYRR Ambassador": "All Spots Filled",
+      "Post-Race Amenities": "All Spots Filled",
+      "Start and Finish": "All Spots Filled"
+    },
+    "https://events.nyrr.org/nyrr-midnight-run-volunteers": {
+      "Volunteer Leaders and Leaders in Training (NO +1)": "Available",
+      "Bag Check": "All Spots Filled",
+      "Course Marshal North": "All Spots Filled",
+      "Course Marshal South": "All Spots Filled",
+      "Fluid Station North": "All Spots Filled",
+      "Fluid Station South": "All Spots Filled",
+      "Medical Volunteers (must be licensed in NYS)": "Medical Available",
+      "NYRR Ambassador": "All Spots Filled",
+      "Post-Race Amenities": "All Spots Filled",
+      "Start and Finish": "All Spots Filled"
     }
   },
   "last_summary_date": "2026-09-06",
-  "last_run_at": "2026-09-07 02:00:38 PM EDT"
+  "last_run_at": "2026-09-07 02:12:07 PM EDT"
 }
