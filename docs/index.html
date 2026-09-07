@@ -260,6 +260,15 @@
     line-height:1.3;
   }
 
+  .event-date{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:0.04em;
+    color:var(--ink-soft);
+    margin:-10px 0 14px;
+  }
+  .event-date.undated{opacity:0.6;}
+
   .tape-track{
     height:8px;
     border-radius:999px;
@@ -386,8 +395,8 @@
 </main>
 
 <footer>
-  <span>Auto-checked roughly every 30 min via GitHub Actions</span>
-  <a href="https://github.com/" id="repo-link">View source</a>
+  <span>Auto-checked hourly via GitHub Actions</span>
+  <a href="https://github.com/migbeltran/nyrr-volunteer" id="repo-link">View source</a>
 </footer>
 
 <script>
@@ -404,20 +413,14 @@
   const EXCLUDED_NAME_SUBSTRINGS = ["leaders", "(no +1)"];
   const HIDDEN_STATUS_CATEGORIES = new Set(["Medical Available"]);
 
-  const EVENT_NAMES = {
-    "https://events.nyrr.org/nyrr-summer-speed-series-5-volunteers": "NYRR Summer Speed Series #5",
-    "https://events.nyrr.org/new-balance-5th-avenue-mile-volunteers": "New Balance 5th Avenue Mile",
-    "https://events.nyrr.org/tcs-new-york-city-training-series-18m-volunteers": "TCS NYC Training Series — 18M",
-    "https://events.nyrr.org/vcp-cross-country-1-volunteers": "VCP Cross Country #1",
-    "https://events.nyrr.org/vcp-cross-country-2-volunteers": "VCP Cross Country #2",
-    "https://events.nyrr.org/nyrr-jersey-city-5k-volunteers": "NYRR Jersey City 5K",
-    "https://events.nyrr.org/nyrr-staten-island-half-volunteers": "NYRR Staten Island Half",
-    "https://events.nyrr.org/nyrr-ted-corbitt-15k-volunteers": "NYRR Ted Corbitt 15K",
-  };
+  // Event names and dates come from state.json's "events" block, scraped from
+  // each event page - so a newly tracked URL names itself with no edit here.
+  // friendlyName() below is only the fallback for a URL that has no scraped
+  // name yet (e.g. the first load against a state.json written before that
+  // block existed).
   const ACRONYMS = new Set(["nyrr","tcs","vcp","nyc","5k","15k","18m"]);
 
   function friendlyName(url){
-    if (EVENT_NAMES[url]) return EVENT_NAMES[url];
     try {
       const slug = new URL(url).pathname.replace(/^\/|\/$/g, "").replace(/-volunteers$/, "");
       return slug.split("-").map(w => ACRONYMS.has(w.toLowerCase()) ? w.toUpperCase() : w[0].toUpperCase()+w.slice(1)).join(" ");
@@ -446,11 +449,31 @@
     return `${months[parseInt(mo,10)-1]} ${parseInt(d,10)}, ${y} · ${parseInt(h,10)}:${min} ${ampm} ${tz}`;
   }
 
-  function renderCard(url, slots, index){
+  const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const WEEKDAYS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+
+  // "2026-11-15T00:00:00" -> Date at local midnight. Built field-by-field
+  // rather than via Date.parse so a bare date never shifts a day across
+  // time zones.
+  function parseEventDate(iso){
+    const m = typeof iso === "string" && iso.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (!m) return null;
+    const d = new Date(+m[1], +m[2] - 1, +m[3]);
+    return isNaN(d) ? null : d;
+  }
+
+  function formatEventDate(iso){
+    const d = parseEventDate(iso);
+    if (!d) return null;
+    return `${WEEKDAYS[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+  }
+
+  function renderCard(url, slots, meta, index){
     const entries = Object.entries(slots);
     const filledCount = entries.filter(([,status]) => status === "All Spots Filled").length;
     const pctFilled = entries.length ? Math.round((filledCount / entries.length) * 100) : 0;
     const hasOpening = entries.some(([name, status]) => isNotifiable(name, status) && status !== "All Spots Filled");
+    const eventDate = formatEventDate(meta && meta.date);
 
     const rows = entries.map(([name, status]) => {
       const suppressed = !isNotifiable(name, status);
@@ -469,7 +492,8 @@
           <div class="bib-number"><span>Bib</span>${String(index+1).padStart(3,"0")}</div>
           <span class="event-status-flag ${hasOpening ? "flag-open" : "flag-full"}">${hasOpening ? "Opening" : "Full"}</span>
         </div>
-        <h3 class="event-name">${escapeHtml(friendlyName(url))}</h3>
+        <h3 class="event-name">${escapeHtml((meta && meta.name) || friendlyName(url))}</h3>
+        <div class="event-date${eventDate ? "" : " undated"}">${escapeHtml(eventDate || "Date unavailable")}</div>
         <div class="tape-track"><div class="tape-fill" style="width:${pctFilled}%"></div></div>
         <div class="tape-label">${pctFilled}% filled · ${entries.length} role${entries.length === 1 ? "" : "s"} tracked</div>
         <ul class="slot-list">${rows}</ul>
@@ -487,7 +511,17 @@
       if (!res.ok) throw new Error("state.json not found (" + res.status + ")");
       const state = await res.json();
       const slotsByUrl = state.slots || {};
-      const urls = Object.keys(slotsByUrl);
+      const eventsByUrl = state.events || {};
+      // Soonest race first; anything without a usable date sorts to the end
+      // rather than jumping the queue at epoch zero.
+      const urls = Object.keys(slotsByUrl).sort((a, b) => {
+        const da = parseEventDate((eventsByUrl[a] || {}).date);
+        const db = parseEventDate((eventsByUrl[b] || {}).date);
+        if (!da && !db) return 0;
+        if (!da) return 1;
+        if (!db) return -1;
+        return da - db;
+      });
 
       let totalSlots = 0;
       let eventsWithOpenings = 0;
@@ -505,7 +539,7 @@
       document.getElementById("checked-at").textContent = "Checked " + formatCheckedAt(state.last_run_at);
 
       grid.innerHTML = urls.length
-        ? urls.map((url, i) => renderCard(url, slotsByUrl[url], i)).join("")
+        ? urls.map((url, i) => renderCard(url, slotsByUrl[url], eventsByUrl[url], i)).join("")
         : '<div class="empty-state">No events currently tracked.</div>';
     } catch (err) {
       grid.innerHTML = `<div class="empty-state">Couldn't load slot data (${escapeHtml(err.message)}). If you're viewing this file locally, run a local server — browsers block file:// fetches — e.g. <code>python3 -m http.server</code> from the docs/ folder.</div>`;

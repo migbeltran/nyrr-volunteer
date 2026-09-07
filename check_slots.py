@@ -84,8 +84,18 @@ HIDDEN_STATUS_CATEGORIES = {"Medical Available"}
 # tracking entirely - no more scraping, no more notifications for them.
 EXPIRY_DAYS_AFTER_EVENT = 3
 
-# Matches the site's date format, e.g. "Sunday, July 26, 2026 at 05:00 AM"
-EVENT_DATE_FORMAT = "%A, %B %d, %Y at %I:%M %p"
+# The site publishes event dates in more than one shape: most pages carry a
+# start time ("Sunday, July 26, 2026 at 05:00 AM") but some render the date
+# alone ("Sunday, November 15, 2026"). We try each format in order and take
+# the first that parses - a date-only page still needs to expire on schedule.
+EVENT_DATE_FORMATS = (
+    "%A, %B %d, %Y at %I:%M %p",
+    "%A, %B %d, %Y",
+)
+
+# Event pages title themselves "<Event Name> - Volunteers" in the first <h1>;
+# we strip that suffix to get a clean display name for the dashboard.
+EVENT_NAME_SUFFIX_RE = re.compile(r"\s*[-\u2013\u2014]\s*volunteers\s*$", re.IGNORECASE)
 
 # Slot names containing any of these (case-insensitive) are suppressed
 # from notifications/summary - a name-based decision, independent of
@@ -135,20 +145,37 @@ def fetch_event_date(soup):
     if not date_div:
         return None
     text = date_div.get_text(strip=True)
-    try:
-        return datetime.strptime(text, EVENT_DATE_FORMAT)
-    except ValueError:
+    for fmt in EVENT_DATE_FORMATS:
+        try:
+            return datetime.strptime(text, fmt)
+        except ValueError:
+            continue
+    return None
+
+
+def fetch_event_name(soup):
+    """Returns the event's display name, or None if the page doesn't have one.
+
+    Scraped rather than hardcoded so newly added URLs get a real name for
+    free - callers fall back to something derived from the URL when this
+    returns None.
+    """
+    h1 = soup.find("h1")
+    if not h1:
         return None
+    name = EVENT_NAME_SUFFIX_RE.sub("", h1.get_text(strip=True)).strip()
+    return name or None
 
 
 def parse_html(html):
-    """Returns (event_date, {slot_name: status}) parsed from raw HTML text.
+    """Returns (event_date, event_name, {slot_name: status}) from raw HTML.
 
     Separated from fetch_event_data() so this logic can be unit-tested
     against a saved/fake HTML snippet, with no network call involved.
     """
     soup = BeautifulSoup(html, "html.parser")
     event_date = fetch_event_date(soup)
+    event_name = fetch_event_name(soup)
 
     slots = {}
     # Each assignment option is a <li> containing a status tag (<p> or <span>)
@@ -191,11 +218,11 @@ def parse_html(html):
         slot_name = lines[0]
         slots[slot_name] = status
 
-    return event_date, slots
+    return event_date, event_name, slots
 
 
 def fetch_event_data(url):
-    """Returns (event_date, {slot_name: status}) for one event page."""
+    """Returns (event_date, event_name, {slot_name: status}) for one event."""
     resp = requests.get(url, headers=HEADERS, timeout=20)
     resp.raise_for_status()
     return parse_html(resp.text)
@@ -207,7 +234,7 @@ def load_state():
     if os.path.exists(STATE_FILE):
         with open(STATE_FILE, "r") as f:
             return json.load(f)
-    return {"slots": {}, "last_summary_date": None}
+    return {"slots": {}, "events": {}, "last_summary_date": None}
 
 
 def save_state(state):
@@ -239,7 +266,12 @@ def send_notification(title, message, priority="default"):
 def main():
     old_state = load_state()
     old_slots_by_url = old_state.get("slots", {})
+    old_events_by_url = old_state.get("events", {})
     new_slots_by_url = {}
+    # Per-event display metadata (name + date) for the dashboard. Kept in its
+    # own top-level key so "slots" stays exactly {url: {name: status}} - the
+    # shape the change-detection diff below compares against.
+    new_events_by_url = {}
     changes = []
     summary_lines = []
 
@@ -251,7 +283,7 @@ def main():
 
     for url in URLS:
         try:
-            event_date, slots = fetch_event_data(url)
+            event_date, event_name, slots = fetch_event_data(url)
         except Exception as e:
             summary_lines.append(f"[ERROR] {url}: {e}")
             # Carry the last-known-good data forward instead of dropping
@@ -261,6 +293,8 @@ def main():
             # real change-alert for whatever happened during the outage.
             if url in old_slots_by_url:
                 new_slots_by_url[url] = old_slots_by_url[url]
+            if url in old_events_by_url:
+                new_events_by_url[url] = old_events_by_url[url]
             continue
 
         # Skip (and stop tracking) events more than EXPIRY_DAYS_AFTER_EVENT
@@ -276,6 +310,10 @@ def main():
                 continue
 
         new_slots_by_url[url] = slots
+        new_events_by_url[url] = {
+            "name": event_name,
+            "date": event_date.isoformat() if event_date else None,
+        }
         old_slots = old_slots_by_url.get(url, {})
 
         date_label = f" ({event_date:%b %d, %Y})" if event_date else ""
@@ -361,6 +399,7 @@ def main():
 
     new_state = {
         "slots": new_slots_by_url,
+        "events": new_events_by_url,
         "last_summary_date": new_last_summary_date,
         "last_run_at": now_et.strftime("%Y-%m-%d %I:%M:%S %p %Z"),
     }
