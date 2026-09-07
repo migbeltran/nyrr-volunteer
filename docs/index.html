@@ -250,6 +250,7 @@
   }
   .flag-open{background:var(--status-available-bg); color:var(--status-available);}
   .flag-full{background:var(--status-unknown-bg); color:var(--ink-soft);}
+  .flag-ninefilled{background:var(--status-nearcap-bg); color:var(--status-nearcap);}
 
   .event-name{
     font-family:var(--font-body);
@@ -269,17 +270,6 @@
   }
   .event-date.undated{opacity:0.6;}
 
-  /* Past (or no-longer-dated) races sink below the live ones and fade back,
-     so the board reads as "what's still runnable" at a glance. Hovering
-     restores them to full strength for when you do want to read one. */
-  .bib-card.stale{
-    opacity:0.5;
-    filter:saturate(0.4);
-  }
-  .bib-card.stale:hover{
-    opacity:1;
-    filter:none;
-  }
 
   .tape-track{
     height:8px;
@@ -493,11 +483,33 @@
     return { rank: past ? 1 : 0, date: date, stale: past };
   }
 
-  function renderCard(url, slots, meta, index){
+  // The headline flag, in priority order:
+  //   "Available"            - a 9+1 slot is still open (the one worth acting on)
+  //   "All 9+1 Slots Filled" - every 9+1 slot is gone, but something else is open
+  //   "Filled"               - nothing open at all
+  // An event with no 9+1 slots at all falls back to plain Available/Filled.
+  // "Open" here means the same thing it means to the notifier - isNotifiable()
+  // and not filled - so Medical Available doesn't read as an opening.
+  function eventFlag(slots, tags){
+    const entries = Object.entries(slots);
+    const isOpen = (name, status) => isNotifiable(name, status) && status !== "All Spots Filled";
+    const isNinePlusOne = name => ((tags || {})[name] || []).includes("9+1");
+
+    if (entries.some(([n, st]) => isNinePlusOne(n) && isOpen(n, st))) {
+      return { label: "Available", cls: "flag-open" };
+    }
+    const anyOpen = entries.some(([n, st]) => isOpen(n, st));
+    if (!anyOpen) return { label: "Filled", cls: "flag-full" };
+    return entries.some(([n]) => isNinePlusOne(n))
+      ? { label: "All 9+1 Slots Filled", cls: "flag-ninefilled" }
+      : { label: "Available", cls: "flag-open" };
+  }
+
+  function renderCard(url, slots, meta, tags, index){
     const entries = Object.entries(slots);
     const filledCount = entries.filter(([,status]) => status === "All Spots Filled").length;
     const pctFilled = entries.length ? Math.round((filledCount / entries.length) * 100) : 0;
-    const hasOpening = entries.some(([name, status]) => isNotifiable(name, status) && status !== "All Spots Filled");
+    const flag = eventFlag(slots, tags);
     const eventDate = formatEventDate(meta && meta.date);
     const stale = staleness(meta).stale;
 
@@ -513,10 +525,10 @@
     }).join("");
 
     return `
-      <div class="bib-card${stale ? " stale" : ""}">
+      <div class="bib-card">
         <div class="bib-top">
           <div class="bib-number"><span>Bib</span>${String(index+1).padStart(3,"0")}</div>
-          <span class="event-status-flag ${hasOpening && !stale ? "flag-open" : "flag-full"}">${stale ? "Past" : hasOpening ? "Opening" : "Full"}</span>
+          <span class="event-status-flag ${flag.cls}">${escapeHtml(flag.label)}</span>
         </div>
         <h3 class="event-name">${escapeHtml((meta && meta.name) || friendlyName(url))}</h3>
         <div class="event-date${eventDate ? "" : " undated"}">${escapeHtml(eventDate || "Date unavailable")}${stale && eventDate ? " · past" : ""}</div>
@@ -538,6 +550,7 @@
       const state = await res.json();
       const slotsByUrl = state.slots || {};
       const eventsByUrl = state.events || {};
+      const tagsByUrl = state.slot_tags || {};
       // Upcoming races first (soonest first), then ones already run, then
       // undated - so nothing stale outranks a race you can still sign up for.
       const urls = Object.keys(slotsByUrl).sort((a, b) => {
@@ -564,7 +577,7 @@
       document.getElementById("checked-at").textContent = "Checked " + formatCheckedAt(state.last_run_at);
 
       grid.innerHTML = urls.length
-        ? urls.map((url, i) => renderCard(url, slotsByUrl[url], eventsByUrl[url], i)).join("")
+        ? urls.map((url, i) => renderCard(url, slotsByUrl[url], eventsByUrl[url], tagsByUrl[url], i)).join("")
         : '<div class="empty-state">No events currently tracked.</div>';
     } catch (err) {
       grid.innerHTML = `<div class="empty-state">Couldn't load slot data (${escapeHtml(err.message)}). If you're viewing this file locally, run a local server — browsers block file:// fetches — e.g. <code>python3 -m http.server</code> from the docs/ folder.</div>`;

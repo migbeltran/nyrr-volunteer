@@ -103,6 +103,12 @@ EVENT_DATE_FORMATS = (
 # we strip that suffix to get a clean display name for the dashboard.
 EVENT_NAME_SUFFIX_RE = re.compile(r"\s*[-\u2013\u2014]\s*volunteers\s*$", re.IGNORECASE)
 
+# Each assignment <li> carries short tag lines alongside the slot name -
+# "9+1" (counts toward the 9+1 marathon-qualifying program), "No +1", and
+# "medical". We match them exactly against this list rather than treating
+# every stray line as a tag, since some slots also list shift dates/times.
+KNOWN_SLOT_TAGS = ("9+1", "No +1", "medical")
+
 # Slot names containing any of these (case-insensitive) are suppressed
 # from notifications/summary - a name-based decision, independent of
 # the slot's status/color.
@@ -174,7 +180,7 @@ def fetch_event_name(soup):
 
 
 def parse_html(html):
-    """Returns (event_date, event_name, {slot_name: status}) from raw HTML.
+    """Returns (event_date, event_name, {slot: status}, {slot: [tags]}).
 
     Separated from fetch_event_data() so this logic can be unit-tested
     against a saved/fake HTML snippet, with no network call involved.
@@ -184,6 +190,7 @@ def parse_html(html):
     event_name = fetch_event_name(soup)
 
     slots = {}
+    slot_tags = {}
     # Each assignment option is a <li> containing a status tag (<p> or <span>)
     # with an inline "color" style. We identify status by that color rather
     # than the text itself, since wording can vary across events.
@@ -224,11 +231,18 @@ def parse_html(html):
         slot_name = lines[0]
         slots[slot_name] = status
 
-    return event_date, event_name, slots
+        # Everything after the name may hold tags; keep only the ones we
+        # recognize, compared case-insensitively against their exact text.
+        rest = {line.lower() for line in lines[1:]}
+        tags = [tag for tag in KNOWN_SLOT_TAGS if tag.lower() in rest]
+        if tags:
+            slot_tags[slot_name] = tags
+
+    return event_date, event_name, slots, slot_tags
 
 
 def fetch_event_data(url):
-    """Returns (event_date, event_name, {slot_name: status}) for one event."""
+    """Returns (event_date, event_name, {slot: status}, {slot: [tags]})."""
     resp = requests.get(url, headers=HEADERS, timeout=20)
     resp.raise_for_status()
     return parse_html(resp.text)
@@ -240,7 +254,7 @@ def load_state():
     if os.path.exists(STATE_FILE):
         with open(STATE_FILE, "r") as f:
             return json.load(f)
-    return {"slots": {}, "events": {}, "last_summary_date": None}
+    return {"slots": {}, "events": {}, "slot_tags": {}, "last_summary_date": None}
 
 
 def save_state(state):
@@ -275,11 +289,15 @@ def main():
     old_state = load_state()
     old_slots_by_url = old_state.get("slots", {})
     old_events_by_url = old_state.get("events", {})
+    old_tags_by_url = old_state.get("slot_tags", {})
     new_slots_by_url = {}
     # Per-event display metadata (name + date) for the dashboard. Kept in its
     # own top-level key so "slots" stays exactly {url: {name: status}} - the
     # shape the change-detection diff below compares against.
     new_events_by_url = {}
+    # {url: {slot_name: [tags]}} - kept in its own block for the same reason
+    # as "events": "slots" must stay {url: {name: status}} for the diff below.
+    new_tags_by_url = {}
     changes = []
     summary_lines = []
 
@@ -291,7 +309,7 @@ def main():
 
     for url in URLS:
         try:
-            event_date, event_name, slots = fetch_event_data(url)
+            event_date, event_name, slots, slot_tags = fetch_event_data(url)
         except Exception as e:
             summary_lines.append(f"[ERROR] {url}: {e}")
             # Carry the last-known-good data forward instead of dropping
@@ -303,6 +321,8 @@ def main():
                 new_slots_by_url[url] = old_slots_by_url[url]
             if url in old_events_by_url:
                 new_events_by_url[url] = old_events_by_url[url]
+            if url in old_tags_by_url:
+                new_tags_by_url[url] = old_tags_by_url[url]
             continue
 
         # Skip (and stop tracking) events more than EXPIRY_DAYS_AFTER_EVENT
@@ -322,6 +342,7 @@ def main():
             "name": event_name,
             "date": event_date.isoformat() if event_date else None,
         }
+        new_tags_by_url[url] = slot_tags
         old_slots = old_slots_by_url.get(url, {})
 
         date_label = f" ({event_date:%b %d, %Y})" if event_date else ""
@@ -408,6 +429,7 @@ def main():
     new_state = {
         "slots": new_slots_by_url,
         "events": new_events_by_url,
+        "slot_tags": new_tags_by_url,
         "last_summary_date": new_last_summary_date,
         "last_run_at": now_et.strftime("%Y-%m-%d %I:%M:%S %p %Z"),
     }
