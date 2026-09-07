@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NYRR Volunteer Slot Tracker — Bib Board</title>
+<title>NYRR Volunteer Slot Tracker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -69,18 +69,10 @@
     text-align:center;
     gap:14px;
   }
-  .brand-eyebrow{
-    font-family:var(--font-mono);
-    font-size:12px;
-    letter-spacing:0.14em;
-    text-transform:uppercase;
-    color:var(--orange-soft);
-    margin:0 0 6px;
-  }
   .brand-title{
     font-family:var(--font-display);
     font-weight:700;
-    font-size:clamp(28px, 4vw, 40px);
+    font-size:clamp(22px, 4.4vw, 38px);
     letter-spacing:0.01em;
     margin:0;
     text-transform:uppercase;
@@ -425,10 +417,7 @@
 
 <header class="masthead">
   <div class="masthead-inner">
-    <div>
-      <p class="brand-eyebrow">NYRR Volunteer Slot Tracker</p>
-      <h1 class="brand-title">Bib Board</h1>
-    </div>
+    <h1 class="brand-title">NYRR Volunteer Slot Tracker</h1>
     <div class="live-pill"><span class="live-dot"></span><span id="checked-at">Loading…</span></div>
   </div>
 </header>
@@ -453,7 +442,7 @@
 
 <main>
   <div class="section-heading">
-    <h2>Race Field</h2>
+    <h2>Events</h2>
     <button class="refresh-btn" id="refresh-btn">↻ Refresh</button>
   </div>
   <div class="bib-grid" id="bib-grid">
@@ -634,7 +623,7 @@
     return `
       <div class="bib-card">
         <div class="bib-top">
-          <div class="bib-number"><span>Bib</span>${String(index+1).padStart(3,"0")}</div>
+          <div class="bib-number"><span>Event</span>${String(index+1).padStart(3,"0")}</div>
           <span class="event-status-flag ${flag.cls}">${escapeHtml(flag.label)}</span>
         </div>
         <h3 class="event-name">${linkedEventName}</h3>
