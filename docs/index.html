@@ -62,12 +62,12 @@
   .masthead-inner{
     max-width:1100px;
     margin:0 auto;
-    padding:28px 24px 22px;
+    padding:28px 24px 24px;
     display:flex;
-    justify-content:space-between;
-    align-items:flex-end;
-    flex-wrap:wrap;
-    gap:16px;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    gap:14px;
   }
   .brand-eyebrow{
     font-family:var(--font-mono);
@@ -113,9 +113,14 @@
   }
 
   /* ---------- Stat strip ---------- */
-  .stat-strip{
+  /* Openings first, then the stat strip - both sharing one padded column so
+     they line up with the race field below on every width. */
+  .board-top{
     max-width:1100px;
     margin:0 auto;
+    padding:28px 24px 0;
+  }
+  .stat-strip{
     display:grid;
     grid-template-columns:repeat(2, 1fr);
     gap:1px;
@@ -123,7 +128,6 @@
     border:1px solid var(--line);
     border-radius:10px;
     overflow:hidden;
-    transform:translateY(24px);
     box-shadow:0 8px 24px rgba(11,30,61,0.08);
   }
   .stat-cell{
@@ -152,7 +156,7 @@
   main{
     max-width:1100px;
     margin:0 auto;
-    padding:56px 24px 40px;
+    padding:36px 24px 40px;
   }
   .section-heading{
     display:flex;
@@ -194,7 +198,7 @@
     border-left:4px solid var(--orange);
     border-radius:8px;
     padding:18px 20px;
-    margin-bottom:32px;
+    margin-bottom:24px;
   }
   .openings h2{
     font-family:var(--font-display);
@@ -419,7 +423,7 @@
 
   @media (max-width:640px){
     .stat-strip{grid-template-columns:1fr;}
-    main{padding-top:48px;}
+    main{padding-top:28px;}
   }
 </style>
 </head>
@@ -435,23 +439,25 @@
   </div>
 </header>
 
-<div class="stat-strip" id="stat-strip">
-  <div class="stat-cell">
-    <div class="stat-num" id="stat-total">—</div>
-    <div class="stat-label">Events Tracked</div>
-  </div>
-  <div class="stat-cell">
-    <div class="stat-num" id="stat-slots">—</div>
-    <div class="stat-label">Roles Monitored</div>
-  </div>
-</div>
-
-<main>
+<div class="board-top">
   <section class="openings" id="openings">
     <h2>Open 9+1 Slots<span class="count" id="openings-count"></span></h2>
     <div id="openings-body"><div class="none">Loading…</div></div>
   </section>
 
+  <div class="stat-strip" id="stat-strip">
+    <div class="stat-cell">
+      <div class="stat-num" id="stat-total">—</div>
+      <div class="stat-label">Events Tracked</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num" id="stat-slots">—</div>
+      <div class="stat-label">Roles Monitored</div>
+    </div>
+  </div>
+</div>
+
+<main>
   <div class="section-heading">
     <h2>Race Field</h2>
     <button class="refresh-btn" id="refresh-btn">↻ Refresh</button>
@@ -462,8 +468,7 @@
 </main>
 
 <footer>
-  <span>Auto-checked hourly via GitHub Actions</span>
-  <a href="https://github.com/migbeltran/nyrr-volunteer" id="repo-link">View source</a>
+  <span>Auto-checked every 30 mins</span>
 </footer>
 
 <script>
