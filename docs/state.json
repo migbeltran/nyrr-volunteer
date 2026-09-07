@@ -101,6 +101,56 @@
       "Start and Finish": "All Spots Filled"
     }
   },
+  "events": {
+    "https://events.nyrr.org/new-balance-5th-avenue-mile-volunteers": {
+      "name": "New Balance 5th Avenue Mile",
+      "date": "2026-09-13T05:00:00"
+    },
+    "https://events.nyrr.org/tcs-new-york-city-training-series-18m-volunteers": {
+      "name": "TCS New York City Marathon Training Series 18M",
+      "date": "2026-09-20T04:30:00"
+    },
+    "https://events.nyrr.org/vcp-cross-country-1-volunteers": {
+      "name": "NYRR Cross Country Series #1",
+      "date": null
+    },
+    "https://events.nyrr.org/vcp-cross-country-2-volunteers": {
+      "name": "NYRR Cross Country Series #2",
+      "date": "2026-10-04T00:00:00"
+    },
+    "https://events.nyrr.org/nyrr-jersey-city-5k-volunteers": {
+      "name": "NYRR Jersey City 5K",
+      "date": "2026-10-04T04:00:00"
+    },
+    "https://events.nyrr.org/nyrr-staten-island-half-volunteers": {
+      "name": "NYRR Staten Island Half",
+      "date": "2026-10-11T05:00:00"
+    },
+    "https://events.nyrr.org/rising-nyrr-fall-jamboree-volunteers": {
+      "name": "Rising NYRR Fall Jamboree",
+      "date": "2026-10-17T04:00:00"
+    },
+    "https://events.nyrr.org/abbott-dash-to-the-finish-line-5k-volunteers": {
+      "name": "Abbott Dash to the Finish Line 5K",
+      "date": "2026-10-31T04:30:00"
+    },
+    "https://events.nyrr.org/vcp-cross-country-3-volunteers": {
+      "name": "NYRR Cross Country Series #3",
+      "date": "2026-11-15T00:00:00"
+    },
+    "https://events.nyrr.org/nyrr-ted-corbitt-15k-volunteers": {
+      "name": "NYRR Ted Corbitt 15K",
+      "date": "2026-12-05T04:00:00"
+    },
+    "https://events.nyrr.org/nyrr-frosty-5k-volunteers": {
+      "name": "NYRR Frosty 5K",
+      "date": "2026-12-12T00:00:00"
+    },
+    "https://events.nyrr.org/nyrr-midnight-run-volunteers": {
+      "name": "NYRR Midnight Run",
+      "date": "2026-12-31T18:30:00"
+    }
+  },
   "last_summary_date": "2026-09-06",
-  "last_run_at": "2026-09-07 02:30:28 PM EDT"
+  "last_run_at": "2026-09-07 02:39:50 PM EDT"
 }
