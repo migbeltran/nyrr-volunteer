@@ -269,6 +269,18 @@
   }
   .event-date.undated{opacity:0.6;}
 
+  /* Past (or no-longer-dated) races sink below the live ones and fade back,
+     so the board reads as "what's still runnable" at a glance. Hovering
+     restores them to full strength for when you do want to read one. */
+  .bib-card.stale{
+    opacity:0.5;
+    filter:saturate(0.4);
+  }
+  .bib-card.stale:hover{
+    opacity:1;
+    filter:none;
+  }
+
   .tape-track{
     height:8px;
     border-radius:999px;
@@ -468,12 +480,26 @@
     return `${WEEKDAYS[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
   }
 
+  // A race is stale once its date has passed. An event whose page no longer
+  // publishes a date at all is treated the same way: NYRR drops the date bar
+  // after the race, so "undated" in practice means "already run". Both sink
+  // below the upcoming races - rank 0 upcoming, 1 past, 2 undated.
+  function staleness(meta){
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const date = parseEventDate(meta && meta.date);
+    if (!date) return { rank: 2, date: null, stale: true };
+    const past = date < today;
+    return { rank: past ? 1 : 0, date: date, stale: past };
+  }
+
   function renderCard(url, slots, meta, index){
     const entries = Object.entries(slots);
     const filledCount = entries.filter(([,status]) => status === "All Spots Filled").length;
     const pctFilled = entries.length ? Math.round((filledCount / entries.length) * 100) : 0;
     const hasOpening = entries.some(([name, status]) => isNotifiable(name, status) && status !== "All Spots Filled");
     const eventDate = formatEventDate(meta && meta.date);
+    const stale = staleness(meta).stale;
 
     const rows = entries.map(([name, status]) => {
       const suppressed = !isNotifiable(name, status);
@@ -487,13 +513,13 @@
     }).join("");
 
     return `
-      <div class="bib-card">
+      <div class="bib-card${stale ? " stale" : ""}">
         <div class="bib-top">
           <div class="bib-number"><span>Bib</span>${String(index+1).padStart(3,"0")}</div>
-          <span class="event-status-flag ${hasOpening ? "flag-open" : "flag-full"}">${hasOpening ? "Opening" : "Full"}</span>
+          <span class="event-status-flag ${hasOpening && !stale ? "flag-open" : "flag-full"}">${stale ? "Past" : hasOpening ? "Opening" : "Full"}</span>
         </div>
         <h3 class="event-name">${escapeHtml((meta && meta.name) || friendlyName(url))}</h3>
-        <div class="event-date${eventDate ? "" : " undated"}">${escapeHtml(eventDate || "Date unavailable")}</div>
+        <div class="event-date${eventDate ? "" : " undated"}">${escapeHtml(eventDate || "Date unavailable")}${stale && eventDate ? " · past" : ""}</div>
         <div class="tape-track"><div class="tape-fill" style="width:${pctFilled}%"></div></div>
         <div class="tape-label">${pctFilled}% filled · ${entries.length} role${entries.length === 1 ? "" : "s"} tracked</div>
         <ul class="slot-list">${rows}</ul>
@@ -512,15 +538,14 @@
       const state = await res.json();
       const slotsByUrl = state.slots || {};
       const eventsByUrl = state.events || {};
-      // Soonest race first; anything without a usable date sorts to the end
-      // rather than jumping the queue at epoch zero.
+      // Upcoming races first (soonest first), then ones already run, then
+      // undated - so nothing stale outranks a race you can still sign up for.
       const urls = Object.keys(slotsByUrl).sort((a, b) => {
-        const da = parseEventDate((eventsByUrl[a] || {}).date);
-        const db = parseEventDate((eventsByUrl[b] || {}).date);
-        if (!da && !db) return 0;
-        if (!da) return 1;
-        if (!db) return -1;
-        return da - db;
+        const sa = staleness(eventsByUrl[a]);
+        const sb = staleness(eventsByUrl[b]);
+        if (sa.rank !== sb.rank) return sa.rank - sb.rank;
+        if (!sa.date || !sb.date) return 0;
+        return sa.date - sb.date;
       });
 
       let totalSlots = 0;
