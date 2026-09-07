@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NYRR Volunteer Watch — Bib Board</title>
+<title>NYRR Volunteer Slot Tracker — Bib Board</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -186,6 +186,70 @@
     outline-offset:2px;
   }
 
+  /* The one thing worth acting on: every open 9+1 slot across all events,
+     called out above the field so it never has to be hunted for. */
+  .openings{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-left:4px solid var(--orange);
+    border-radius:8px;
+    padding:18px 20px;
+    margin-bottom:32px;
+  }
+  .openings h2{
+    font-family:var(--font-display);
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    font-size:15px;
+    color:var(--navy);
+    margin:0 0 12px;
+  }
+  .openings h2 .count{
+    font-family:var(--font-mono);
+    font-size:11px;
+    color:var(--orange);
+    letter-spacing:0.06em;
+    margin-left:8px;
+  }
+  .openings ul{list-style:none; margin:0; padding:0;}
+  .openings li{
+    padding:7px 0;
+    border-top:1px solid var(--line);
+    font-size:14px;
+    display:flex;
+    align-items:baseline;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .openings li:first-child{border-top:none;}
+  /* The li's own gap stops at the anchor, so the anchor lays its parts out too. */
+  .openings a{
+    color:var(--navy);
+    text-decoration:none;
+    display:inline-flex;
+    align-items:baseline;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .openings a:hover{text-decoration:underline; color:var(--orange);}
+  .openings .ev{font-weight:600;}
+  .openings .sep{color:var(--ink-soft);}
+  .openings .st{
+    font-family:var(--font-mono);
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    color:var(--status-nearcap);
+    background:var(--status-nearcap-bg);
+    padding:2px 7px;
+    border-radius:999px;
+  }
+  .openings .none{
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    color:var(--ink-soft);
+  }
+
   .bib-grid{
     display:grid;
     grid-template-columns:repeat(auto-fill, minmax(300px, 1fr));
@@ -251,6 +315,7 @@
   .flag-open{background:var(--status-available-bg); color:var(--status-available);}
   .flag-full{background:var(--status-unknown-bg); color:var(--ink-soft);}
   .flag-ninefilled{background:var(--status-nearcap-bg); color:var(--status-nearcap);}
+  .flag-unalerted{background:var(--status-medical-bg); color:var(--status-medical);}
 
   .event-name{
     font-family:var(--font-body);
@@ -364,7 +429,7 @@
 <header class="masthead">
   <div class="masthead-inner">
     <div>
-      <p class="brand-eyebrow">NYRR Volunteer Watch</p>
+      <p class="brand-eyebrow">NYRR Volunteer Slot Tracker</p>
       <h1 class="brand-title">Bib Board</h1>
     </div>
     <div class="live-pill"><span class="live-dot"></span><span id="checked-at">Loading…</span></div>
@@ -387,6 +452,11 @@
 </div>
 
 <main>
+  <section class="openings" id="openings">
+    <h2>Open 9+1 Slots<span class="count" id="openings-count"></span></h2>
+    <div id="openings-body"><div class="none">Loading…</div></div>
+  </section>
+
   <div class="section-heading">
     <h2>Race Field</h2>
     <button class="refresh-btn" id="refresh-btn">↻ Refresh</button>
@@ -484,25 +554,70 @@
   }
 
   // The headline flag, in priority order:
-  //   "Available"            - a 9+1 slot is still open (the one worth acting on)
-  //   "All 9+1 Slots Filled" - every 9+1 slot is gone, but something else is open
-  //   "Filled"               - nothing open at all
+  //   "Available"              - a 9+1 slot is open (the one worth acting on)
+  //   "All 9+1 Slots Filled"   - every 9+1 slot is gone, but something else is open
+  //   "Available (not alerted)" - the only things open are ones the notifier
+  //                              suppresses: Leaders slots, Medical, etc. Still
+  //                              a real opening, just not one you get pinged for.
+  //   "Filled"                 - nothing open at all
   // An event with no 9+1 slots at all falls back to plain Available/Filled.
-  // "Open" here means the same thing it means to the notifier - isNotifiable()
-  // and not filled - so Medical Available doesn't read as an opening.
   function eventFlag(slots, tags){
     const entries = Object.entries(slots);
-    const isOpen = (name, status) => isNotifiable(name, status) && status !== "All Spots Filled";
+    const isVacant = status => status !== "All Spots Filled";
+    const isOpen = (name, status) => isNotifiable(name, status) && isVacant(status);
     const isNinePlusOne = name => ((tags || {})[name] || []).includes("9+1");
 
     if (entries.some(([n, st]) => isNinePlusOne(n) && isOpen(n, st))) {
       return { label: "Available", cls: "flag-open" };
     }
-    const anyOpen = entries.some(([n, st]) => isOpen(n, st));
-    if (!anyOpen) return { label: "Filled", cls: "flag-full" };
-    return entries.some(([n]) => isNinePlusOne(n))
-      ? { label: "All 9+1 Slots Filled", cls: "flag-ninefilled" }
-      : { label: "Available", cls: "flag-open" };
+    if (entries.some(([n, st]) => isOpen(n, st))) {
+      return entries.some(([n]) => isNinePlusOne(n))
+        ? { label: "All 9+1 Slots Filled", cls: "flag-ninefilled" }
+        : { label: "Available", cls: "flag-open" };
+    }
+    // Nothing the notifier would alert on - but a suppressed slot may still
+    // be open, and calling that "Filled" is simply wrong.
+    if (entries.some(([, st]) => isVacant(st))) {
+      return { label: "Available (not alerted)", cls: "flag-unalerted" };
+    }
+    return { label: "Filled", cls: "flag-full" };
+  }
+
+  // Every open 9+1 slot across every event, flattened for the board above the
+  // race field. Same definition of "open" the green Available flag uses.
+  function openNinePlusOneSlots(urls, slotsByUrl, eventsByUrl, tagsByUrl){
+    const out = [];
+    urls.forEach(url => {
+      const tags = tagsByUrl[url] || {};
+      const eventName = (eventsByUrl[url] || {}).name || friendlyName(url);
+      Object.entries(slotsByUrl[url] || {}).forEach(([name, status]) => {
+        if (!(tags[name] || []).includes("9+1")) return;
+        if (!isNotifiable(name, status) || status === "All Spots Filled") return;
+        out.push({ url: url, event: eventName, slot: name, status: status });
+      });
+    });
+    return out;
+  }
+
+  function renderOpenings(open){
+    const body = document.getElementById("openings-body");
+    document.getElementById("openings-count").textContent = open.length ? `(${open.length})` : "";
+    if (!open.length) {
+      body.innerHTML = '<div class="none">No 9+1 slots open right now.</div>';
+      return;
+    }
+    body.innerHTML = "<ul>" + open.map(o => {
+      // Only ever linkify the event pages we actually track.
+      const safe = /^https:\/\/events\.nyrr\.org\//.test(o.url);
+      const label = `<span class="ev">${escapeHtml(o.event)}</span>`
+                  + `<span class="sep">—</span>`
+                  + `<span>${escapeHtml(o.slot)}</span>`;
+      const tag = o.status === "Available" ? ""
+                : `<span class="st">${escapeHtml(o.status)}</span>`;
+      return "<li>"
+        + (safe ? `<a href="${escapeHtml(o.url)}" target="_blank" rel="noopener noreferrer">${label}</a>` : label)
+        + tag + "</li>";
+    }).join("") + "</ul>";
   }
 
   function renderCard(url, slots, meta, tags, index){
@@ -576,12 +691,17 @@
       document.getElementById("stat-slots").textContent = totalSlots;
       document.getElementById("checked-at").textContent = "Checked " + formatCheckedAt(state.last_run_at);
 
+      renderOpenings(openNinePlusOneSlots(urls, slotsByUrl, eventsByUrl, tagsByUrl));
+
       grid.innerHTML = urls.length
         ? urls.map((url, i) => renderCard(url, slotsByUrl[url], eventsByUrl[url], tagsByUrl[url], i)).join("")
         : '<div class="empty-state">No events currently tracked.</div>';
     } catch (err) {
       grid.innerHTML = `<div class="empty-state">Couldn't load slot data (${escapeHtml(err.message)}). If you're viewing this file locally, run a local server — browsers block file:// fetches — e.g. <code>python3 -m http.server</code> from the docs/ folder.</div>`;
       document.getElementById("checked-at").textContent = "Data unavailable";
+      document.getElementById("openings-count").textContent = "";
+      document.getElementById("openings-body").innerHTML =
+        '<div class="none">Slot data unavailable.</div>';
     }
   }
 
