@@ -57,6 +57,12 @@ FORCE_SUMMARY = os.environ.get("FORCE_SUMMARY", "false").lower() == "true"
 NTFY_TOPIC = os.environ.get("NTFY_TOPIC")  # e.g. "miguel-volunteer-slots-8x2k"
 NTFY_URL = f"https://ntfy.sh/{NTFY_TOPIC}" if NTFY_TOPIC else None
 
+# The GitHub Pages dashboard (published from docs/). Attached to every
+# notification two ways: as ntfy's "Click" header, so tapping the
+# notification opens the board directly, and as a plain line in the body
+# for clients that ignore Click (email, some web views).
+DASHBOARD_URL = "https://migbeltran.github.io/nyrr-volunteer/"
+
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
                   "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
@@ -245,16 +251,18 @@ def save_state(state):
 # --- Notifications -------------------------------------------------------
 
 def send_notification(title, message, priority="default"):
+    body = f"{message}\n\n{DASHBOARD_URL}"
     if not NTFY_URL:
         print("NTFY_TOPIC not set - skipping notification. Message was:")
-        print(title, "-", message)
+        print(title, "-", body)
         return
     requests.post(
         NTFY_URL,
-        data=message.encode("utf-8"),
+        data=body.encode("utf-8"),
         headers={
             "Title": title,
             "Priority": priority,
+            "Click": DASHBOARD_URL,
             "Content-Type": "text/plain; charset=utf-8",
         },
         timeout=10,
