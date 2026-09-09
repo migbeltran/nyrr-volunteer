@@ -1,7 +1,6 @@
 {
   "slots": {
     "https://events.nyrr.org/new-balance-5th-avenue-mile-volunteers": {
-      "Volunteer Leaders and Leaders in Training (NO +1)": "Available",
       "Course Marshal": "All Spots Filled",
       "Finish Area Bag Check": "All Spots Filled",
       "Finish Area Jump Team": "All Spots Filled",
@@ -152,9 +151,6 @@
   },
   "slot_tags": {
     "https://events.nyrr.org/new-balance-5th-avenue-mile-volunteers": {
-      "Volunteer Leaders and Leaders in Training (NO +1)": [
-        "No +1"
-      ],
       "Course Marshal": [
         "9+1"
       ],
@@ -405,5 +401,5 @@
     }
   },
   "last_summary_date": "2026-09-08",
-  "last_run_at": "2026-09-09 07:30:24 AM EDT"
+  "last_run_at": "2026-09-09 08:00:30 AM EDT"
 }
