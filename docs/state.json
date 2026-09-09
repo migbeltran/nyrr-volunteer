@@ -40,7 +40,7 @@
     "https://events.nyrr.org/nyrr-staten-island-half-volunteers": {
       "Volunteer Leaders and Leaders in Training (NO +1)": "Available",
       "Bag Check": "All Spots Filled",
-      "Fluid Station": "Near Capacity",
+      "Fluid Station": "All Spots Filled",
       "Green Team": "All Spots Filled",
       "Medals Distribution": "All Spots Filled",
       "Medical Volunteers (Must be licensed in NYS)": "Medical Available",
@@ -401,5 +401,5 @@
     }
   },
   "last_summary_date": "2026-09-08",
-  "last_run_at": "2026-09-09 10:00:31 AM EDT"
+  "last_run_at": "2026-09-09 10:30:27 AM EDT"
 }
