@@ -6,7 +6,7 @@
       "Finish Area Jump Team": "All Spots Filled",
       "Finish Area NYRR Ambassador": "All Spots Filled",
       "Post-Race Amenities": "All Spots Filled",
-      "Start Area Bag Check": "Near Capacity",
+      "Start Area Bag Check": "All Spots Filled",
       "Start Area Jump Team": "All Spots Filled",
       "Start Area NYRR Ambassador": "All Spots Filled",
       "Start Corral Marshal": "All Spots Filled",
@@ -392,5 +392,5 @@
     }
   },
   "last_summary_date": "2026-09-09",
-  "last_run_at": "2026-09-10 12:30:25 PM EDT"
+  "last_run_at": "2026-09-10 01:00:27 PM EDT"
 }
