@@ -9,7 +9,7 @@
       "Start Area Bag Check": "All Spots Filled",
       "Start Area Jump Team": "All Spots Filled",
       "Start Area NYRR Ambassador": "All Spots Filled",
-      "Start Corral Marshal": "Near Capacity",
+      "Start Corral Marshal": "All Spots Filled",
       "Youth Event Assistant": "All Spots Filled"
     },
     "https://events.nyrr.org/tcs-new-york-city-training-series-18m-volunteers": {
@@ -392,5 +392,5 @@
     }
   },
   "last_summary_date": "2026-09-09",
-  "last_run_at": "2026-09-10 06:30:28 PM EDT"
+  "last_run_at": "2026-09-10 07:00:27 PM EDT"
 }
