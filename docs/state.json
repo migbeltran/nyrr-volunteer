@@ -86,7 +86,7 @@
     },
     "https://events.nyrr.org/nyrr-midnight-run-volunteers": {
       "Volunteer Leaders and Leaders in Training (NO +1)": "Available",
-      "Bag Check": "Near Capacity",
+      "Bag Check": "All Spots Filled",
       "Course Marshal North": "All Spots Filled",
       "Course Marshal South": "All Spots Filled",
       "Fluid Station North": "All Spots Filled",
@@ -392,5 +392,5 @@
     }
   },
   "last_summary_date": "2026-09-11",
-  "last_run_at": "2026-09-11 11:30:27 PM EDT"
+  "last_run_at": "2026-09-12 12:00:27 AM EDT"
 }
