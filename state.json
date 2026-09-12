@@ -22,7 +22,7 @@
       "Start and Finish": "All Spots Filled"
     },
     "https://events.nyrr.org/vcp-cross-country-1-volunteers": {
-      "Cross Country Assistant": "Near Capacity"
+      "Cross Country Assistant": "All Spots Filled"
     },
     "https://events.nyrr.org/vcp-cross-country-2-volunteers": {
       "Cross Country Assistant": "All Spots Filled"
@@ -392,5 +392,5 @@
     }
   },
   "last_summary_date": "2026-09-11",
-  "last_run_at": "2026-09-11 09:00:31 PM EDT"
+  "last_run_at": "2026-09-11 09:30:25 PM EDT"
 }
